@@ -1,7 +1,5 @@
-from re import S
-from pydantic_settings import BaseSettings
 
-from backend.Auth import algorithm
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):

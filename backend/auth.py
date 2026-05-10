@@ -2,7 +2,7 @@ from backend.config import settings
 from jose import JWTError, jwt
 from typing import Union, Any
 from datetime import datetime, timedelta, timezone
-from passlib import CryptContext
+from passlib.context import CryptContext
 
 
 access_token_expire = 30

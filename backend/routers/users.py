@@ -1,5 +1,5 @@
 from fastapi import Depends, HTTPException, APIRouter
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session, select
 from pydantic import ValidationError
 from datetime import datetime, timezone
@@ -54,10 +54,10 @@ async def login(data: LoginRequest = Depends(), session: Session = Depends(get_s
     existing_user = session.exec(statement).first()
     if existing_user is None:
         raise HTTPException(
-            status_code=401, detail="Incorrect Username or password")
+            status_code=401, detail="Incorrect email or password")
     if not verify_password(data.password, existing_user.password):
         raise HTTPException(
-            status_code=401, detail="Incorrect username or password")
+            status_code=401, detail="Incorrect email or password")
     return {
         "access_token": create_access_token(existing_user.id),
         "refresh_token": create_refresh_token(existing_user.id)

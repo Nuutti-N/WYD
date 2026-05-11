@@ -10,6 +10,10 @@ class Settings(BaseSettings):
     jwt_key: str
     jwt_refresh_key: str
 
+    # Supabase
+    SUPABASE_URL: str
+    SUPABASE_KEY: str
+
     class Config:
         env_file = ".env"
 

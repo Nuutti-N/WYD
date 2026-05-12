@@ -1,6 +1,7 @@
 from fastapi import FastAPI
-
 from backend.routers.users import router as users_router
+from backend.routers.dreams import router as dreams
+from backend.routers.checkins import router as checkin
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -18,3 +19,5 @@ app.add_middleware(
 )
 
 app.include_router(users_router)
+app.include_router(dreams)
+app.include_router(checkin)

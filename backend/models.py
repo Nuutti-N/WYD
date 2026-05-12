@@ -7,10 +7,11 @@ from datetime import datetime, date
 class User(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     password: str
-    username: str = Field(unique=True)
+    username: str | None = None
     email: EmailStr = Field(unique=True)
     full_name: str | None = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    xp: float = Field(default="0.0")
 
 
 class UserIn(BaseModel):
@@ -66,5 +67,10 @@ class Checkin(SQLModel, table=True):
     dream_id: int = Field(foreign_key="dream.id")
     hours: float
     note: str | None = None
-    date: date = Field(default_factory=date.today)
+    created_day: date = Field(default_factory=date.today)
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class CheckinIn(BaseModel):
+    hours: float
+    note: str | None = None

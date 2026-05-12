@@ -1,13 +1,13 @@
 from pydantic import BaseModel, EmailStr, Field as PydanticField
 from sqlmodel import SQLModel, Field
 from sqlalchemy import Column, JSON
-from datetime import datetime
+from datetime import datetime, date
 
 
 class User(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     password: str
-    username: str | None = None
+    username: str = Field(unique=True)
     email: EmailStr = Field(unique=True)
     full_name: str | None = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
@@ -23,7 +23,7 @@ class UserIn(BaseModel):
 class UserOut(BaseModel):
     id: int
     email: EmailStr
-    username: str
+    username: str | None = None
 
 
 class Token(BaseModel):
@@ -45,6 +45,11 @@ class RefreshRequest(BaseModel):
     refresh_token: str
 
 
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+
 class Dream(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="user.id")
@@ -52,4 +57,14 @@ class Dream(SQLModel, table=True):
     # When you click category, then you can just deep where you focus.
     specific_items: list[str] = Field(default=[], sa_column=Column(JSON))
     is_active: bool = Field(default=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class Checkin(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id")
+    dream_id: int = Field(foreign_key="dream.id")
+    hours: float
+    note: str | None = None
+    date: date = Field(default_factory=date.today)
     created_at: datetime = Field(default_factory=datetime.utcnow)

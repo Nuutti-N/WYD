@@ -6,3 +6,6 @@ __pycache__/
 # Environment 
 .venv
 .env 
+
+# alembic.ini
+*.alembic.ini

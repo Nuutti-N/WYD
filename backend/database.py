@@ -2,7 +2,7 @@ from sqlmodel import create_engine, Session
 from backend.config import settings
 
 
-engine = create_engine(settings.DATABASE_URL, echo=True)
+engine = create_engine(settings.DATABASE_URL, echo=False)
 
 
 def get_session():

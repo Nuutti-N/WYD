@@ -1,5 +1,5 @@
 from fastapi import Depends, HTTPException, APIRouter
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlmodel import Session, select
 from pydantic import ValidationError
 from datetime import datetime, timezone
@@ -49,8 +49,8 @@ async def register(data: UserIn, session: Session = Depends(get_session)):
 
 
 @router.post("/login", response_model=Token, tags=["login"])
-async def login(data: LoginRequest = Depends(), session: Session = Depends(get_session)):
-    statement = select(User).where(User.email == data.email)
+async def login(data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
+    statement = select(User).where(User.email == data.username)
     existing_user = session.exec(statement).first()
     if existing_user is None:
         raise HTTPException(

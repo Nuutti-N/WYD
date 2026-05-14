@@ -11,7 +11,8 @@ class User(SQLModel, table=True):
     email: EmailStr = Field(unique=True)
     full_name: str | None = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
-    xp: float = Field(default="0.0")
+    xp: float = Field(default=0.0)
+    streak: int = Field(default=0)
 
 
 class UserIn(BaseModel):
@@ -74,3 +75,9 @@ class Checkin(SQLModel, table=True):
 class CheckinIn(BaseModel):
     hours: float
     note: str | None = None
+
+
+class StatsOut(BaseModel):
+    streak: int
+    level: int
+    xp: float = Field(default="0.0")

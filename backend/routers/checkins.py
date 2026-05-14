@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import select
-from backend.models import CheckinIn, Checkin, Dream
+from backend.models import CheckinIn, Checkin, Dream, StatsOut
 from backend.routers.users import get_current_user
 from backend.database import Session, get_session
 
@@ -20,3 +20,23 @@ async def add_logs(data: CheckinIn, session: Session = Depends(get_session), cur
     session.commit()
     session.refresh(new_checkin)
     return new_checkin
+
+
+@router.get("/checkins/stats", tags=["checkins"], summary="Get stats, what streak, what level, and how much you have xp")
+async def checkins_stats(session: Session = Depends(get_session), current_user=Depends(get_current_user)):
+    thresholds = [0]
+    cost = 50
+    total = 0
+    for _ in range(50):
+        total += cost
+        thresholds.append(total)
+        cost += 50
+    level = 0
+    for threshold in thresholds:
+        if current_user.xp >= threshold:
+            level += 1
+    return {
+        "streak": current_user.streak,
+        "xp": current_user.xp,
+        "level": level
+    }

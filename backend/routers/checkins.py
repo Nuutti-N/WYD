@@ -3,7 +3,7 @@ from sqlmodel import select
 from backend.models import CheckinIn, Checkin, Dream, StatsOut
 from backend.routers.users import get_current_user
 from backend.database import Session, get_session
-
+from datetime import date
 
 router = APIRouter()
 
@@ -14,6 +14,10 @@ async def add_logs(data: CheckinIn, session: Session = Depends(get_session), cur
         Dream.user_id == current_user.id)).first()
     if not dream:
         raise HTTPException(status_code=404, detail="Not found")
+    log_information = session.exec(select(Checkin).where(
+        Checkin.user_id == current_user.id, Checkin.created_day == date.today())).first()
+    if not log_information and data.hours >= 0.33:
+        current_user.streak += 1
     new_checkin = Checkin(user_id=current_user.id,
                           dream_id=dream.id, hours=data.hours, note=data.note)
     session.add(new_checkin)

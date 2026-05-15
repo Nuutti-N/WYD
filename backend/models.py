@@ -70,6 +70,7 @@ class Checkin(SQLModel, table=True):
     note: str | None = None
     created_day: date = Field(default_factory=date.today)
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    xp_earned: float = Field(default=None)
 
 
 class CheckinIn(BaseModel):

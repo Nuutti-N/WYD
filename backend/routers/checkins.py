@@ -17,9 +17,14 @@ async def add_logs(data: CheckinIn, session: Session = Depends(get_session), cur
     log_information = session.exec(select(Checkin).where(
         Checkin.user_id == current_user.id, Checkin.created_day == date.today())).first()
     if not log_information and data.hours >= 0.33:
+        if current_user.streak is None:
+            current_user.streak = 0
         current_user.streak += 1
+    xp_earned = data.hours * (1 + current_user.streak * 0.1)
     new_checkin = Checkin(user_id=current_user.id,
-                          dream_id=dream.id, hours=data.hours, note=data.note)
+                          dream_id=dream.id, hours=data.hours, note=data.note, xp_earned=xp_earned)
+    current_user.xp += xp_earned
+    session.add(current_user)
     session.add(new_checkin)
     session.commit()
     session.refresh(new_checkin)

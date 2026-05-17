@@ -7,10 +7,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route elemen={<PrivateRoutes />}>
-          <Route path="/Register" element={<Register />} />
-          <Route path="/Login" element={<Login />} />
+        <Route element={<PrivateRoutes />}>
         </Route>
+        <Route path="/Register" element={<Register />} />
+        {/* <Route path="/Login" element={<Login />} /> */}
       </Routes>
     </BrowserRouter>
   )

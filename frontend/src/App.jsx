@@ -10,7 +10,7 @@ function App() {
         <Route element={<PrivateRoutes />}>
         </Route>
         <Route path="/Register" element={<Register />} />
-        {/* <Route path="/Login" element={<Login />} /> */}
+        <Route path="/Login" element={<Login />} />
       </Routes>
     </BrowserRouter>
   )

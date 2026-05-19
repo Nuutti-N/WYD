@@ -11,7 +11,7 @@ function Onboarding() {
     const [focuses, setFocuses] = useState([])
     const [selectedFocus, setSelectedFocus] = useState("")
     async function finish() {
-        await api.post("/category", { params: { category } })
+        await api.post("/category", null, { params: { category } })
         await api.post("/specific-items", [selectedFocus])
     }
 
@@ -73,16 +73,17 @@ function Onboarding() {
                     </>
                 }
 
-                <div className="mt-auto pt-8">
+                <div className="flex justify-center fixed inset-x-0 bottom-0 z-30 pt-8 pb-8">
                     <button
                         type="button"
                         onClick={() => {
                             if (step === 1) setStep(2);
                             else finish();
                         }}
-                        className="w-full py-4 rounded-2xl bg-violet-600 text-white font-semibold text-base"
+                        disabled={step === 1 ? !category : !selectedFocus}
+                        className="w-80 py-4 rounded-2xl bg-violet-600 text-white font-semibold text-base disabled:opacity-40 shadow-lg shadow-violet-500/40"
                     >
-                        {step === 1 ? "Continue" : "Start my dream"}
+                        {step === 1 ? "Continue" : "Let's go "}
                     </button>
                 </div>
             </form>

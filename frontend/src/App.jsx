@@ -3,7 +3,7 @@ import Register from "../pages/Register"
 import Login from "../pages/Login"
 import Onboarding from "../pages/Onboarding"
 import PrivateRoutes from "./components/PrivateRoutes"
-
+import Dashboard from "../pages/Dashboard"
 
 function App() {
   return (

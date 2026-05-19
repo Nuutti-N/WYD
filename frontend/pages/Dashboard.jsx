@@ -37,43 +37,36 @@ function Home() {
     if (!stats) return null
 
     return (
-        <div className="">
-            <form className="">
-
-                <div className="">
-                    <p>Day Streak</p>
-                    <StatTile
-                        label="Streak"
-                        value={stats.streak}
-                        unit="days"
-                        accent="streak"
-                    />
-                </div>
-                <div className="">
-                    <p>Hours</p>
-                    <StatTile
-                        label="XP"
-                        value={stats.xp}
-                        unit="xp"
-                        accent="xp "
-                    />
-                </div>
-                <div className="">
-                    <StatTile
-                        label="Level"
-                        value={stats.level}
-                    />
-                </div>
-                <div className="">
-                    <StatTile
-                        label="Hours"
-                        value={stats.hours}
-                    />
-                </div>
-
-            </form>
-
-
+        <div className="min-h-screen bg-gray-950 flex justify-center px-6">
+            <div className=" w-56 mt-12 border border-violet-700 rounded-2xl p-4 bg-violet-800">
+                <StatTile
+                    label="Day Streak"
+                    value={stats.streak}
+                    unit="days"
+                    accent="streak"
+                />
+            </div>
+            <div className="">
+                <p>Hours</p>
+                <StatTile
+                    label="XP"
+                    value={stats.xp}
+                    unit="xp"
+                    accent="xp "
+                />
+            </div>
+            <div className="">
+                <StatTile
+                    label="Level"
+                    value={stats.level}
+                />
+            </div>
+            <div className="">
+                <StatTile
+                    label="Hours"
+                    value={stats.hours}
+                />
+            </div>
         </div>
 
     )

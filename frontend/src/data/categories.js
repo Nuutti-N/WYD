@@ -4,8 +4,8 @@ export const categories = [
     { label: "Fitness", focuses: ["Strength", "Running", "Cycling", "Calisthenics", "Combat sports", "Mobility"] },
     { label: "Art", focuses: ["Drawing", "Painting", "3D", "Photography", "Animation", "Design"] },
     { label: "Music", focuses: ["Production", "Guitar", "Piano", "DJ", "own band", "rap", "SongWriting"] },
-    { label: "health", focuses: ["Sleep", "Nutrition", "Meditation", "Therapy"] },
-    { label: "writing", focuses: ["Fiction", "Essays", "Newsletter", "Screenwriting", "Poetry", "Own book"] },
+    { label: "Health", focuses: ["Sleep", "Nutrition", "Meditation", "Therapy"] },
+    { label: "Writing", focuses: ["Fiction", "Essays", "Newsletter", "Screenwriting", "Poetry", "Own book"] },
     { label: "Other", focuses: ["Write own"] },
 
 ]

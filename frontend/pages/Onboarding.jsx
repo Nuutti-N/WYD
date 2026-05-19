@@ -13,6 +13,7 @@ function Onboarding() {
     async function finish() {
         await api.post("/category", null, { params: { category } })
         await api.post("/specific-items", [selectedFocus])
+        navigate("/Dashboard")
     }
 
 

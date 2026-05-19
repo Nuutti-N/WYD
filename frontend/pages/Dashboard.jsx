@@ -49,6 +49,27 @@ function Home() {
                         accent="streak"
                     />
                 </div>
+                <div className="">
+                    <p>Hours</p>
+                    <StatTile
+                        label="XP"
+                        value={stats.xp}
+                        unit="xp"
+                        accent="xp "
+                    />
+                </div>
+                <div className="">
+                    <StatTile
+                        label="Level"
+                        value={stats.level}
+                    />
+                </div>
+                <div className="">
+                    <StatTile
+                        label="Hours"
+                        value={stats.hours}
+                    />
+                </div>
 
             </form>
 

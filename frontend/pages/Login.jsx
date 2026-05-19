@@ -19,7 +19,8 @@ function Login() {
             data.append("username", email)
             data.append("password", password)
             const response = await api.post("/login", data)
-            localStorage.setItem("token", response.access_token)
+            localStorage.setItem("token", response.data.access_token)
+            navigate("/Onboarding")
         }
         catch (err) {
             setError("wrong email or password")

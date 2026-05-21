@@ -59,7 +59,7 @@ function Logprogress() {
                     />
 
                 </div>
-                <div className="flex flex-col items-center mt-auto pb-6">
+                <div className="flex flex-col items-center mt-auto pb-24">
                     <button
                         type="submit"
                         className=" w-64 bg-violet-600 hover:bg-violet-700 shadow-lg shadow-violet-500/40 active:scale-95 text-white font-semibold py-3 rounded-xl transition mt-2"

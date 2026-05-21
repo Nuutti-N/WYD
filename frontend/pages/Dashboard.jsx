@@ -65,11 +65,11 @@ function Home() {
                         />
                     </div>
                 </div>
-                <div className=" flex justify-center items-center mt-auto pb-6">
+                <div className=" flex justify-center items-center mt-auto pb-24">
                     <button
                         type="button"
                         onClick={() => navigate("/Logprogress")}
-                        className="w-64 bg-violet-600 hover:bg-violet-700 shadow-lg shadow-violet-500/40 text-white font-semibold rounded-xl transition"
+                        className="w-64 bg-violet-600 hover:bg-violet-700 shadow-lg shadow-violet-500/40 text-white font-semibold py-3 rounded-xl transition"
                     > Log Progress </button>
                 </div>
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import api from "../api/client"
 
 
@@ -37,8 +37,8 @@ function Home() {
     if (!stats) return null
 
     return (
-        <div className="min-h-screen bg-gray-950">
-            <div className="px-6 max-w-md mx-auto pt-22">
+        <div className="min-h-screen bg-gray-950 flex flex-col">
+            <div className="px-6 max-w-md mx-auto pt-22 flex flex-col flex-1">
                 <div className="w-full rounded-2xl bg-violet-800 border border-violet-700 p-4">
                     <StatTile
                         label="Day Streak"
@@ -65,6 +65,14 @@ function Home() {
                         />
                     </div>
                 </div>
+                <div className=" flex justify-center items-center mt-auto pb-6">
+                    <button
+                        type="button"
+                        onClick={() => navigate("/Logprogress")}
+                        className="w-64 bg-violet-600 hover:bg-violet-700 shadow-lg shadow-violet-500/40 text-white font-semibold rounded-xl transition"
+                    > Log Progress </button>
+                </div>
+
             </div>
         </div>
 

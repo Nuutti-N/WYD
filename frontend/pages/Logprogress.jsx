@@ -12,6 +12,8 @@ function Logprogress() {
         e.preventDefault()
         try {
             await api.post("/checkins", { hours, note })
+            setHours(0)
+            setNote("")
         }
         catch (err) {
             setError("Invalid, try again!")

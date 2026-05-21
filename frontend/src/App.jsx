@@ -4,6 +4,7 @@ import Login from "../pages/Login"
 import Onboarding from "../pages/Onboarding"
 import PrivateRoutes from "./components/PrivateRoutes"
 import Dashboard from "../pages/Dashboard"
+import Logprogress from "../pages/Logprogress"
 
 function App() {
   return (
@@ -11,7 +12,8 @@ function App() {
       <Routes>
         <Route element={<PrivateRoutes />}>
           <Route path="/Onboarding" element={<Onboarding />} />
-          <Route path="Dashboard" element={<Dashboard />} />
+          <Route path="/Dashboard" element={<Dashboard />} />
+          <Route path="/Logprogress" element={<Logprogress />} />
         </Route>
         <Route path="/Register" element={<Register />} />
         <Route path="/Login" element={<Login />} />

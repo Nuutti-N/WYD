@@ -44,8 +44,12 @@ async def checkins_stats(session: Session = Depends(get_session), current_user=D
     for threshold in thresholds:
         if current_user.xp >= threshold:
             level += 1
+    all_checkins = session.exec(select(Checkin).where(
+        Checkin.user_id == current_user.id)).all()
+    total_hours = sum(app.hours for app in all_checkins)
     return {
         "streak": current_user.streak,
         "xp": current_user.xp,
-        "level": level
+        "level": level,
+        "hours": total_hours,
     }

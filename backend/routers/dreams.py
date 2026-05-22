@@ -27,3 +27,12 @@ async def specific_items(specific_items: list[str], session: Session = Depends(g
     session.commit()
     session.refresh(dream)
     return dream
+
+
+@router.get("/dream_info", tags=["dream"], summary="get dream information category and specific category")
+async def dream_information(session: Session = Depends(get_session), current_user=Depends(get_current_user)):
+    dream = session.exec(select(Dream).where(
+        Dream.user_id == current_user.id)).first()
+    if not dream:
+        raise HTTPException(status_code=404, detail="Dream not found")
+    return dream

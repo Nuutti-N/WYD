@@ -79,13 +79,14 @@ function Profile() {
                         valueClass="text-xl font-medium text-white"
                     />
                 </div>
-
+            </div>
+            <div className="flex flex-col items-center mt-auto pb-24">
                 <button
+                    type="submit"
+                    className="w-52 py-3 rounded-xl border border-zinc-700 bg-violet-700 text-zinc-300 text-sm hover:bg-violet-900 hover:text-white transition-colors"
                     onClick={() => {
                         localStorage.removeItem("token")
                         navigate("/login")
-                        type = "submit"
-                        className = "w-full py-3 rounded-xl border border-zinc-700 text-zinc-400 text-sm hover:bg-zinc-900 hover:text-white transition-colors"
                     }}>Sign out</button>
             </div>
         </div>

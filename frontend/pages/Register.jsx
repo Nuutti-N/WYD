@@ -28,6 +28,15 @@ function Register() {
                     <h1 className="text-3xl font-bold text-white"> Start your dream </h1>
                     <p className="text-sm text-gray-400 mt-1"> Other people are already grinding. Don't be late. </p>
                 </header>
+                {/* <div className="flex flex-col gap-1"> */}
+                {/* <label htmlFor="username" className="text-sm font-medium text-gray-300"> Username </label>
+                </div>
+                <input
+                    id="username"
+                    type="text"
+                    placeHolder="Username"
+                    className="w-full bg-gray-800 text-white placeholder-gray-500 border border-gray-700 rounded-xl px-4 py-3 focus:outline-none
+   focus:ring-2 focus:ring-violet-500"></input> */}
                 <div className="flex flex-col gap-1">
                     <label htmlFor="email" className="text-sm font-medium text-gray-300"> Email </label>
                 </div>

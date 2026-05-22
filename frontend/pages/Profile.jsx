@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
 import api from "../api/client"
+import { useNavigate } from "react-router-dom"
 
-function StatTile({ value, label }) {
+function StatTile({ value, label, valueClass, labelClass }) {
     return (
         <div>
-            <p>{value}</p>
-            <p>{label}</p>
+            <p className={valueClass}>{value}</p>
+            <p className={labelClass}>{label}</p>
         </div>
 
     )
@@ -13,6 +14,7 @@ function StatTile({ value, label }) {
 
 
 function Profile() {
+    const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
     const [stats, setStats] = useState(null)
     const [User, setUser] = useState("")
@@ -41,36 +43,50 @@ function Profile() {
 
     if (!stats) return null
     return (
-        <div className="">
-            <h1 className="">
-                <span className>Profile</span>
+        <div className="min-h-screen bg-zinc-950 text-white flex flex-col items-center gap-4">
+            <h1 className="text-white">
+                <span className="">Profile</span>
             </h1>
+            <div className="">
+                <p className="">{User.username || User.username}</p>
+                <p className="">
+                    Level {stats.level} · {category.category} · {category.specific_items?.join(", ")}
+                </p>
+            </div>
 
-            <div className="flex gap-4 mt-4">
-                <div className="flex-1 bg-gray-800 rounded-2xl p-4">
+            <div className="grid grid-cols-3 gap-3">
+                <div className="bg-zinc-900 rounded-xl p-4 text-center">
                     <StatTile
-                        label="XP"
-                        value={stats.xp}
+                        label="streak"
+                        value={stats.streak}
+                        labelClass="text-xs text-zinc-500"
+                        valueClass="text-xl font-medium text-white"
                     />
                 </div>
-                <div className="flex-1 bg-gray-800 rounded-2xl p-4">
+                <div className="bg-zinc-900 rounded-xl p-4 text-center">
                     <StatTile
-                        label="Level"
-                        value={stats.level}
-                    />
-                </div>
-                <div className="flex-1 bg-gray-800 rounded-2xl p-4">
-                    <StatTile
-                        label="Hours"
+                        label="total"
                         value={stats.hours}
+                        labelClass="text-xs text-zinc-500"
+                        valueClass="text-xl font-medium text-white"
+                    />
+                </div>
+                <div className="bg-zinc-900 rounded-xl p-4 text-center">
+                    <StatTile
+                        label="xp"
+                        value={stats.xp}
+                        labelClass="text-xs text-zinc-500"
+                        valueClass="text-xl font-medium text-white"
                     />
                 </div>
 
-                <div>
-                    <button
-                        type="submit"
-                        className="">Sign out</button>
-                </div>
+                <button
+                    onClick={() => {
+                        localStorage.removeItem("token")
+                        navigate("/login")
+                        type = "submit"
+                        className = "w-full py-3 rounded-xl border border-zinc-700 text-zinc-400 text-sm hover:bg-zinc-900 hover:text-white transition-colors"
+                    }}>Sign out</button>
             </div>
         </div>
     )

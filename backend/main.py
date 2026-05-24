@@ -15,7 +15,7 @@ app.add_middleware(
         "https://wyd-sigma.vercel.app",
     ],
     allow_credentials=True,
-    allow_methods=["GET", "DELETE", "POST", "PUT"],
+    allow_methods=["*"],
     allow_headers=["*"]
 )
 

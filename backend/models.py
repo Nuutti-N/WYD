@@ -13,6 +13,7 @@ class User(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     xp: float = Field(default=0.0)
     streak: int = Field(default=0)
+    last_checkin_date: date | None = Field(default=None)
 
 
 class UserIn(BaseModel):

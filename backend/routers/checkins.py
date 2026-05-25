@@ -20,7 +20,7 @@ async def add_logs(data: CheckinIn, session: Session = Depends(get_session), cur
         if current_user.last_checkin_date == date.today() - timedelta(days=1):
             current_user.streak += 1
         else:
-            current_user.streak = 0
+            current_user.streak = 1
         current_user.last_checkin_date = date.today()
     xp_earned = data.hours * (1 + current_user.streak * 0.1)
     new_checkin = Checkin(user_id=current_user.id,

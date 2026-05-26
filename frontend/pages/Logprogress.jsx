@@ -10,10 +10,13 @@ function Logprogress() {
     const [note, setNote] = useState("")
     async function handleSubmit(e) {
         e.preventDefault()
+        setLoading(true)
         try {
+            setError("")
             await api.post("/checkins", { hours, note })
             setHours(0)
             setNote("")
+            navigate("/Dashboard")
         }
         catch (err) {
             setError("Invalid, try again!")
@@ -23,7 +26,6 @@ function Logprogress() {
         }
 
     }
-
 
     return (
         <div className="min-h-screen bg-gray-950 flex flex-col">
@@ -67,6 +69,8 @@ function Logprogress() {
                         Submit proof
                     </button>
                 </div>
+                {error &&
+                    <p style={{ color: "red" }}>{error}</p>}
 
             </form>
         </div>

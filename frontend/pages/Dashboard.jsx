@@ -65,6 +65,15 @@ function Home() {
                         />
                     </div>
                 </div>
+                <div className="">
+                    <p className="">Level {stats.level}</p>
+                </div>
+                <div className="">
+                    <p className="">{stats.xp} / {stats.xp_next_level} XP </p>
+                </div>
+                <div className="w-full bg-gray-700 rounded-full h-3">
+                    <div className="bg-violet-600 h-3 rounded-full" style={{ width: `${((stats.xp - stats.xp_current_level) / (stats.xp_next_level - stats.xp_current_level)) * 100}%` }} />
+                </div>
                 <div className=" flex justify-center items-center mt-auto pb-24">
                     <button
                         type="button"

@@ -14,7 +14,7 @@ function StatTile({ label, value }) {
 
 function getTimeOfDay() {
     const hour = new Date().getHours()
-    return (hour < 12 ? "Good Morning" : hour < 18 ? "Good afternoon" : "Good evening"
+    return (hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening"
     )
 }
 
@@ -57,26 +57,26 @@ function Home() {
                     <div className="text-2xl">🔥</div>
                 </div>
                 <div className="flex gap-4 mt-4">
-                    <div className="flex-1 bg-[linear-gradient(135deg,#1a1730,#2a1f4a)] rounded-2xl p-4">
+                    <div className="flex-1 bg-zinc-800 rounded-2xl p-4">
                         <StatTile
                             label="XP"
                             value={stats.xp}
                         />
                     </div>
-                    <div className="flex-1 bg-[linear-gradient(135deg,#1a1730,#2a1f4a)] rounded-2xl p-4">
+                    <div className="flex-1 bg-zinc-800 rounded-2xl p-4">
                         <StatTile
                             label="Level"
                             value={stats.level}
                         />
                     </div>
-                    <div className="flex-1 bg-[linear-gradient(135deg,#1a1730,#2a1f4a)] rounded-2xl p-4">
+                    <div className="flex-1 bg-zinc-800 rounded-2xl p-4">
                         <StatTile
                             label="Hours"
                             value={stats.hours}
                         />
                     </div>
                 </div>
-                <div className="rounded-2xl border border-purple-600 p-4 mt-4">
+                <div className="rounded-2xl bg-[linear-gradient(135deg,#1a1730,#2a1f4a)] border border-purple-600 p-4 mt-4">
                     <div className="flex items-center justify-between">
                         <div className="">
                             <p className="text-white">Level {stats.level}</p>
@@ -86,7 +86,7 @@ function Home() {
                         </div>
                     </div>
                     <div className="w-full bg-gray-700 rounded-full h-4 mt-3">
-                        <div className="bg-violet-600 h-4 rounded-full" style={{ width: `${((stats.xp - stats.xp_current_level) / (stats.xp_next_level - stats.xp_current_level)) * 100}%` }} />
+                        <div className="bg-purple-600 h-4 rounded-full" style={{ width: `${((stats.xp - stats.xp_current_level) / (stats.xp_next_level - stats.xp_current_level)) * 100}%` }} />
                     </div>
                 </div>
                 <div className=" flex justify-center items-center mt-4">

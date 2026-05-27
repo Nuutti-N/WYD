@@ -1,20 +1,22 @@
 import { Link, useLocation } from "react-router-dom"
-import { useState } from "react"
+import { Home, PenLine, User } from "lucide-react"
 
 function Navbar() {
     const location = useLocation()
-    const [Loading, setLoading] = useState(false)
-    const [error, setError] = useState("")
+
 
 
     function linkClass(path) {
         return location.pathname === path ? "text-violet-400" : "text-gray-500"
     }
     return (
-        <nav className="fixed bottom-0 left-0 right-0 bg-zinc-950 border-t border-gray-800 flex justify-around  py-4 rounded-2xl">
-            <Link to="/Dashboard" className={`${linkClass("/Dashboard")} text-sm font-medium px-4 py-2`}>Home</Link>
-            <Link to="/Logprogress" className={`${linkClass("/Logprogress")} text-sm font-medium px-4 py-2`}>Log</Link>
-            <Link to="/Profile" className={`${linkClass("/Profile")} text-sm font-medium px-4 py-2`}>Profile</Link>
+        <nav className="fixed w-72 bottom-4 left-1/2 -translate-x-1/2 bg-zinc-900 border-gray-800 flex justify-around  py-4 rounded-2xl">
+            <Link to="/Dashboard" className={` p-2 rounded-xl transition-all ${linkClass("/Dashboard")} flex flex-col items-center gap-1 bg-purple-800`}><Home size={22} />
+                <span className="text-sm font-medium">Home</span></Link>
+            <Link to="/Logprogress" className={`${linkClass("/Logprogress")} flex flex-col items-center gap-1`}><PenLine size={22} />
+                <span className="text-sm font-medium">Log</span>
+            </Link>
+            <Link to="/Profile" className={`${linkClass("/Profile")} flex flex-col items-center gap-1`}><User size={22} /> <span className="text-sm font-medium">Profile</span></Link>
         </nav>
     )
 

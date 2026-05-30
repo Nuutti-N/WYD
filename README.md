@@ -26,6 +26,8 @@ https://wyd-sigma.vercel.app/
 | Frontend | React + Tailwind CSS (mobile-first — demo is phone only) |
 | Deploy | Railway (backend) + Vercel (frontend) | 
 
+# What I built
+
 # What I learned
 - Building a second fullstack app made deployment and structure way faster
 - How to add new fields to the database and migrate without breaking data

@@ -83,3 +83,20 @@ class StatsOut(BaseModel):
     streak: int
     level: int
     xp: float = Field(default="0.0")
+
+
+class Path(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    title: str
+    description: str
+    category: str
+    price: float
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    creator_id: int = Field(foreign_key="user.id")
+
+
+class PathPurchase(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id")
+    path_id: int = Field(foreign_key="path.id")
+    purchased_at: datetime = Field(default_factory=datetime.utcnow)

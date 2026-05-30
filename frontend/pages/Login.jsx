@@ -40,7 +40,7 @@ function Login() {
 
                     <input
                         id="email"
-                        type="text"
+                        type="email"
                         placeholder="Email"
                         className="w-full bg-gray-800 text-white placeholder-gray-500 border border-gray-700 rounded-xl px-4 py-3 focus:outline-none
 focus:ring-2 focus:ring-violet-500"

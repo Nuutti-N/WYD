@@ -79,7 +79,7 @@ function Home() {
                 <div className="rounded-2xl bg-[linear-gradient(135deg,#1a1730,#2a1f4a)] border border-purple-600 p-4 mt-4">
                     <div className="flex items-center justify-between">
                         <div className="">
-                            <p className="text-white">Level {stats.level}</p>
+                            <p className="text-white">Level {stats.level} → {stats.level + 1}</p>
                         </div>
                         <div className="">
                             <p className="text-white">{stats.xp} / {stats.xp_next_level} XP </p>

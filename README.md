@@ -15,7 +15,6 @@
 | Frontend | React + Tailwind CSS (mobile-first — demo is phone only) |
 | Deploy | Railway (backend) + Vercel (frontend) | 
 
-# Project structure 
 
 # Live Demo
 https://wyd-sigma.vercel.app/

@@ -12,13 +12,11 @@
 | Backend | Python FastAPI |
 | Database | PostgreSQL (SQLAlchemy) |
 | Auth | JWT |
-| Payments | Stripe (buying extra excuses) |
 | Frontend | React + Tailwind CSS (mobile-first — demo is phone only) |
 | Deploy | Railway (backend) + Vercel (frontend) | 
 
 # Project structure 
 
-# Try and enjoy
-- I deployed app with railway and vercel
-- Link to app: https://wyd-sigma.vercel.app/
-- the best, what you can do for me, give feedback
+# Live Demo
+https://wyd-sigma.vercel.app/
+

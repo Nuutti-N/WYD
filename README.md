@@ -27,3 +27,9 @@ https://wyd-sigma.vercel.app/
 | Deploy | Railway (backend) + Vercel (frontend) | 
 
 # What I learned
+- Buildin a second fullstack app made deployment and strcture way faster
+- How to add new fields to the database and migrate without breaking data
+- Designing auth flows for real users (email/password)
+- Designing UI with Tailwind CSS
+- Handling CORS, Enviroment variables, and deployment Railway and Vercel
+  

@@ -15,3 +15,11 @@ async def create_paths(body: PathIn, session: Session = Depends(get_session), cu
     session.commit()
     session.refresh(new_path)
     return new_path
+
+
+@router.get("/paths", tags=["paths"])
+async def list_paths(session: Session = Depends(get_session), current_user=Depends(get_current_user)):
+    path = session.exec(select(Path)).all()
+    if not path:
+        raise HTTPException(status_code=404, detail="[]")
+    return path

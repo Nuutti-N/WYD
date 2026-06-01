@@ -38,3 +38,8 @@ async def paths_id(id: int, session: Session = Depends(get_session), current_use
     if not path:
         raise HTTPException(status_code=404, detail="Nothing found")
     return path
+
+
+@router.delete("/paths", tags=["paths"])
+async def delete_path(session: Session = Depends(get_session), current_user=Depends(get_current_user)):
+    return

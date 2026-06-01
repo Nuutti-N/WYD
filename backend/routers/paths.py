@@ -23,3 +23,10 @@ async def list_paths(session: Session = Depends(get_session), current_user=Depen
     if not path:
         raise HTTPException(status_code=404, detail="[]")
     return path
+
+
+@router.get("/paths/mine", tags=["paths"])
+async def mine_paths(session: Session = Depends(get_session), current_user=Depends(get_current_user)):
+    mine_paths = session.exec(select(Path).where(
+        Path.creator_id == current_user.id)).first()
+    return mine_paths

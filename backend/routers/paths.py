@@ -49,4 +49,4 @@ async def delete_path(id: int, session: Session = Depends(get_session), current_
         raise HTTPException(status_code=403, detail="Not your path")
     session.delete(path)
     session.commit()
-    return {"message" "Path deleted"}
+    return {"message": "Path deleted"}

@@ -40,6 +40,13 @@ async def paths_id(id: int, session: Session = Depends(get_session), current_use
     return path
 
 
-@router.delete("/paths", tags=["paths"])
-async def delete_path(session: Session = Depends(get_session), current_user=Depends(get_current_user)):
-    return
+@router.delete("/paths/{id}", tags=["paths"])
+async def delete_path(id: int, session: Session = Depends(get_session), current_user=Depends(get_current_user)):
+    path = session.exec(select(Path).where(Path.id == id)).first()
+    if not path:
+        raise HTTPException(status_code=404, detail="Path not found")
+    if path.creator_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not your path")
+    session.delete(path)
+    session.commit()
+    return {"message" "Path deleted"}

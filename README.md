@@ -6,7 +6,7 @@
 # Live Demo
 https://wyd-sigma.vercel.app/
 
-<img width="1919" height="942" alt="image" src="https://github.com/user-attachments/assets/2fb52d76-3e58-4d5b-a841-e094612bca24" />
+<img width="1218" height="935" alt="image" src="https://github.com/user-attachments/assets/136ca970-f433-4e1e-bdeb-0f79a15f6207" />
 
 
 # Features 

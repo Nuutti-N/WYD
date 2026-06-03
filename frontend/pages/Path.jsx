@@ -39,6 +39,12 @@ function Paths() {
                         className="bg-transparent text-white w-full outline-none text-sm"
                     />
                 </div>
+                <div className="flex justify-center gap-6 border-b border-zinc-800 mt-4 mb-4">
+                    <button onClick={() => setActiveTab("Explore")} className={` pb-2 text-base ${activeTab === 'Explore' ? 'text-white border-b-2 border-purple-500' : 'text-zinc-500'}`}>Explore</button>
+                    <button onClick={() => setActiveTab("Mine")} className={` pb-2 text-base ${activeTab === 'Mine' ? 'text-white border-b-2 border-purple-500' : 'text-zinc-500'}`}>My paths</button>
+                    <button onClick={() => setActiveTab("Create")} className={` pb-2 text-base ${activeTab === 'Create' ? 'text-white border-b-2 border-purple-500' : 'text-zinc-500'}`}> Create</button>
+
+                </div>
                 <div className="flex flex-col">
                     {paths.map(path => (
                         <div key={path.id} className="rounded-2xl bg-zinc-800 border border-purple-800 p-4 mb-3">

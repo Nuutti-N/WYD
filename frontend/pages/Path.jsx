@@ -9,6 +9,7 @@ function Paths() {
     const [loading, setLoading] = useState(true)
     const [paths, setPaths] = useState([])
     const [activeTab, setActiveTab] = useState("Explore")
+    const [search, setSearch] = useState("")
     useEffect(() => {
         setLoading(true)
         async function fetchPaths() {
@@ -26,6 +27,30 @@ function Paths() {
         fetchPaths()
     }, [activeTab])
 
+    return (
+        <div className="">
+            <h1 className="">Paths</h1>
+
+            <input className=""
+                value={search}
+                placeholder="Search paths"
+                onChange={e => setSearch(e.target.value)}
+            />
+            <div className="bg-950-gray">
+                {paths.map(path => (
+                    <div key={path.id}>
+                        <h2>{path.title}</h2>
+                        <p>{path.category}</p>
+                        <p>{path.price}</p>
+                        <p>{path.description}</p>
+
+                    </div>
+                ))}
+            </div>
+
+        </div>
+
+    )
 
 }
 

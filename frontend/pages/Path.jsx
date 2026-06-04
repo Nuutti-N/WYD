@@ -10,6 +10,10 @@ function Paths() {
     const [paths, setPaths] = useState([])
     const [activeTab, setActiveTab] = useState("Explore")
     const [search, setSearch] = useState("")
+    const [title, setTitle] = useState("")
+    const [description, setDescription] = useState("")
+    const [price, setPrice] = useState("")
+    const [category, setCategory] = useState("")
     useEffect(() => {
         setLoading(true)
         async function fetchPaths() {
@@ -26,6 +30,10 @@ function Paths() {
         }
         fetchPaths()
     }, [activeTab])
+    async function createPath() {
+        const response = await api.post("/paths", { title, description, category, price })
+
+    }
 
     return (
         <div className="min-h-screen bg-gray-950 flex flex-col">
@@ -45,7 +53,32 @@ function Paths() {
                     <button onClick={() => setActiveTab("Create")} className={` pb-2 text-base ${activeTab === 'Create' ? 'text-white border-b-2 border-purple-500' : 'text-zinc-500'}`}> Create</button>
 
                 </div>
-                {activeTab === "Create" && <p className="text-white">Create paths so sick</p>}
+                {activeTab === "Create" && (<div className="">
+                    <input
+                        value={title}
+                        placeholder=""
+                        onChange={e => setTitle(e.target.value)}
+                        className="" />
+                    <input
+                        value={description}
+                        placeholder=""
+                        onChange={e => setDescription(e.target.value)}
+                        className="" />
+                    <input
+                        value={category}
+                        placeholder=""
+                        onChange={e => setCategory(e.target.value)}
+                        className="" />
+                    <input
+                        value={price}
+                        placeholder=""
+                        onChange={e => setPrice(e.target.value)}
+                        className="" />
+                    <button
+                        type="submit"
+                        className="text-white"
+                    >Publish path</button>
+                </div>)}
                 {activeTab != "Create" && (
                     <div className="flex flex-col">
                         {paths.map(path => (

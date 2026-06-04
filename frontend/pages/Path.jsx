@@ -30,7 +30,7 @@ function Paths() {
     return (
         <div className="min-h-screen bg-gray-950 flex flex-col">
             <div className="px-6 max-w-md mx-auto pt-20 flex flex-col flex-1">
-                <h1 className="text-white font-semibold text-lg">Paths</h1>
+                <h1 className="text-white font-semibold text-lg">Explore Paths</h1>
                 <div className="bg-zinc-800 rounded-xl px-4 py-3 mt-4 mb-6">
                     <input
                         value={search}
@@ -45,19 +45,21 @@ function Paths() {
                     <button onClick={() => setActiveTab("Create")} className={` pb-2 text-base ${activeTab === 'Create' ? 'text-white border-b-2 border-purple-500' : 'text-zinc-500'}`}> Create</button>
 
                 </div>
-                <div className="flex flex-col">
-                    {paths.map(path => (
-                        <div key={path.id} className="rounded-2xl bg-zinc-800 border border-purple-800 p-4 mb-3">
-                            <div className="flex items-center justify-between">
-                                <h2 className="text-white font-semibold">{path.title}</h2>
-                                <p className=" text-purple-400 font-semibold text-sm">€ {path.price}</p>
-                            </div>
-                            <p className="text-purple-400 font-semibold mb-3">{path.category}</p>
-                            <p className="text-zinc-400 text-sm mb-3">{path.description}</p>
+                {activeTab === "Create" && <p className="text-white">Create paths so sick</p>}
+                {activeTab != "Create" && (
+                    <div className="flex flex-col">
+                        {paths.map(path => (
+                            <div key={path.id} className="rounded-2xl bg-zinc-800 border border-purple-800 p-4 mb-3">
+                                <div className="flex items-center justify-between">
+                                    <h2 className="text-white font-semibold">{path.title}</h2>
+                                    <p className=" text-purple-400 font-semibold text-sm">€ {path.price}</p>
+                                </div>
+                                <p className="text-purple-400 font-semibold mb-3">{path.category}</p>
+                                <p className="text-zinc-400 text-sm mb-3">{path.description}</p>
 
-                        </div>
-                    ))}
-                </div>
+                            </div>
+                        ))}
+                    </div>)}
             </div>
         </div>
 

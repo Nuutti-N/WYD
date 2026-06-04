@@ -68,13 +68,14 @@ function Paths() {
                         value={category}
                         placeholder=""
                         onChange={e => setCategory(e.target.value)}
-                        className="" />
+                        className="text-white" />
                     <input
                         value={price}
                         placeholder=""
                         onChange={e => setPrice(e.target.value)}
-                        className="" />
+                        className="text-white" />
                     <button
+                        onClick={createPath}
                         type="submit"
                         className="text-white"
                     >Publish path</button>

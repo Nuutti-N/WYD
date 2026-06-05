@@ -32,7 +32,10 @@ function Paths() {
     }, [activeTab])
     async function createPath() {
         const response = await api.post("/paths", { title, description, category, price })
-
+        setTitle("")
+        setDescription("")
+        setCategory("")
+        setPrice("")
     }
 
     return (

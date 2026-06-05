@@ -56,32 +56,37 @@ function Paths() {
                     <button onClick={() => setActiveTab("Create")} className={` pb-2 text-base ${activeTab === 'Create' ? 'text-white border-b-2 border-purple-500' : 'text-zinc-500'}`}> Create</button>
 
                 </div>
-                {activeTab === "Create" && (<div className="">
+                {activeTab === "Create" && (<div className="flex flex-col gap-1">
+                    <label className="text-sm font-medium text-gray-300">Title</label>
                     <input
                         value={title}
-                        placeholder=""
+                        placeholder="e.g. 0 to junior dev in 6 months"
                         onChange={e => setTitle(e.target.value)}
-                        className="" />
+                        className="w-full bg-gray-800 text-zinc-400 placeholder-gray-500 border border-gray-700 rounded-xl px-3 py-3 focus:outline-none focus:ring-2 focus:ring-violet-500 mb-4" />
+                    <label className="text-sm font-medium text-gray-300">Description</label>
                     <input
                         value={description}
                         placeholder="Tell people what they'll learn from your path..."
                         onChange={e => setDescription(e.target.value)}
-                        className="text-white" />
+                        className="w-full bg-gray-800 text-zinc-400 placeholder-gray-500 border border-gray-700 rounded-xl px-3 py-3 focus:outline-none focus:ring-2 focus:ring-violet-500 mb-4" />
+                    <label className="text-sm font-medium text-gray-300">Category</label>
                     <input
                         value={category}
-                        placeholder=""
+                        placeholder="Tech, Business, Fitness..."
                         onChange={e => setCategory(e.target.value)}
-                        className="text-white" />
+                        className="w-full bg-gray-800 text-zinc-400 placeholder-gray-500 border border-gray-700 rounded-xl px-3 py-3 focus:outline-none focus:ring-2 focus:ring-violet-500 mb-4" />
+                    <label className="text-sm font-medium text-gray-300">Price €</label>
                     <input
                         value={price}
-                        placeholder=""
+                        placeholder="19"
                         onChange={e => setPrice(e.target.value)}
-                        className="text-white" />
+                        className="w-full bg-gray-800 text-zinc-400 placeholder-gray-500 border border-gray-700 rounded-xl px-3 py-3 focus:outline-none focus:ring-2 focus:ring-violet-500 mb-4" />
                     <button
                         onClick={createPath}
                         type="submit"
-                        className="text-white"
+                        className="w-full bg-violet-600 hover:bg-violet-500 text-white font-semibold py-3 rounded-xl transition mb-4 mt-2"
                     >Publish path</button>
+
                 </div>)}
                 {activeTab != "Create" && (
                     <div className="flex flex-col">

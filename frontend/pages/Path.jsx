@@ -99,6 +99,8 @@ function Paths() {
                                     </div>
                                     <p className="text-purple-400 font-semibold mb-3">{path.category}</p>
                                     <p className="text-zinc-400 text-sm mb-3">{path.description}</p>
+                                    <button onClick={() => api.post(`/paths/${path.id}/buy`)}
+                                        className="w-full bg-violet-600 text-white py-2 rounded-xl mt-2">Select</button>
 
                                 </div>
                             ))}

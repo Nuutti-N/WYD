@@ -20,7 +20,12 @@ function Login() {
             data.append("password", password)
             const response = await api.post("/login", data)
             localStorage.setItem("token", response.data.access_token)
-            navigate("/Onboarding")
+            try {
+                await api.get("/dream_info")
+                navigate("/Dashboard")
+            } catch (err) {
+                navigate("/Onboarding")
+            }
         }
         catch (err) {
             setError("wrong email or password")

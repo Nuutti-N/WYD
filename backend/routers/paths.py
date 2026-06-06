@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import select
 from backend.routers.users import get_current_user
 from backend.database import Session, get_session
-from backend.models import Path, PathIn
+from backend.models import Path, PathIn, PathPurchase
 
 router = APIRouter()
 
@@ -50,3 +50,14 @@ async def delete_path(id: int, session: Session = Depends(get_session), current_
     session.delete(path)
     session.commit()
     return {"message": "Path deleted"}
+
+
+@router.post("/paths/{id}/buy", tags=["paths"])
+async def buy_path(id: int, session: Session = Depends(get_session), current_user=Depends(get_current_user)):
+    path = session.exec(select(Path).where(Path.id == id)).first()
+    if not path:
+        raise HTTPException(status_code=404, detail="Path not found")
+    purchase = PathPurchase(user_id=current_user.id, path_id=id)
+    session.add(purchase)
+    session.commit()
+    return {"message": "Path unlocked"}

@@ -28,6 +28,7 @@ from backend.auth import (
 
 
 router = APIRouter()
+FAKE_HASH = hash_password("dummy_password_for_timing")
 
 
 @router.post("/register", response_model=UserOut, tags=["sign up"])
@@ -56,6 +57,7 @@ async def login(request: Request, data: OAuth2PasswordRequestForm = Depends(), s
     statement = select(User).where(User.email == data.username)
     existing_user = session.exec(statement).first()
     if existing_user is None:
+        verify_password(data.password, FAKE_HASH)
         raise HTTPException(
             status_code=401, detail="Incorrect email or password")
     if not verify_password(data.password, existing_user.password):

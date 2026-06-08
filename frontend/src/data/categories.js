@@ -6,6 +6,5 @@ export const categories = [
     { label: "Music", focuses: ["Production", "Guitar", "Piano", "DJ", "own band", "rap", "SongWriting"] },
     { label: "Health", focuses: ["Sleep", "Nutrition", "Meditation", "Therapy"] },
     { label: "Writing", focuses: ["Fiction", "Essays", "Newsletter", "Screenwriting", "Poetry", "Own book"] },
-    { label: "Other", focuses: ["Write own"] },
 
 ]

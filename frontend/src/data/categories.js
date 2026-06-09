@@ -1,5 +1,5 @@
 export const categories = [
-    { label: "Tech", focuses: ["Programmin", "AI", "Design", "Game dev", "cybersecurity"] },
+    { label: "Tech", focuses: ["Programming", "AI", "Design", "Game dev", "cybersecurity"] },
     { label: "Business", focuses: ["Startup", "Sales", "Marketing", "Content", "E-commerce", "Investing"] },
     { label: "Fitness", focuses: ["Strength", "Running", "Cycling", "Calisthenics", "Combat sports", "Mobility"] },
     { label: "Art", focuses: ["Drawing", "Painting", "3D", "Photography", "Animation", "Design"] },

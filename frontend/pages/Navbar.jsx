@@ -18,7 +18,7 @@ function Navbar() {
             <Link to="/Logprogress" className={`${linkClass("/Logprogress")} flex flex-col items-center gap-1`}><PenLine size={22} />
                 <span className="text-sm font-medium">Log</span>
             </Link>
-            <Link to="/Profile" className={`${linkClass("/Profile")} flex flex-col items-center gap-1`}><User size={22} /> <span className="text-sm font-medium">Profile</span></Link>
+            <Link to="/Profile" className={`${linkClass("/Profile")} flex flex-col items-center gap-1`}><User size={22} /> <span className="text-sm font-medium">You</span></Link>
         </nav>
     )
 

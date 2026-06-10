@@ -8,6 +8,7 @@ import Logprogress from "../pages/Logprogress"
 import Profile from "../pages/Profile"
 import Navbar from "../pages/Navbar"
 import Path from "../pages/Path"
+import Landing from "../pages/Landing"
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
         </Route>
         <Route path="/Register" element={<Register />} />
         <Route path="/Login" element={<Login />} />
-        <Route path="/" element={<Navigate to="/Register" />} />
+        <Route path="/" element={<Landing />} />
       </Routes>
     </BrowserRouter>
   )

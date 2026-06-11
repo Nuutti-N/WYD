@@ -3,6 +3,7 @@ from sqlmodel import select
 from backend.routers.users import get_current_user
 from backend.database import Session, get_session
 from backend.models import Path, PathIn, PathPurchase
+from backend.embedding import embed
 
 router = APIRouter()
 
@@ -11,6 +12,8 @@ router = APIRouter()
 async def create_paths(body: PathIn, session: Session = Depends(get_session), current_user=Depends(get_current_user)):
     new_path = Path(title=body.title, description=body.description,
                     category=body.category, price=body.price, creator_id=current_user.id)
+    text = body.title + " " + body.description + " " + body.category
+    new_path.embedding = embed(text)
     session.add(new_path)
     session.commit()
     session.refresh(new_path)

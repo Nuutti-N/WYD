@@ -2,6 +2,7 @@ from pydantic import BaseModel, EmailStr, Field as PydanticField
 from sqlmodel import SQLModel, Field
 from sqlalchemy import Column, JSON
 from datetime import datetime, date
+from pgvector.sqlalchemy import Vector
 
 
 class User(SQLModel, table=True):
@@ -93,6 +94,8 @@ class Path(SQLModel, table=True):
     price: float
     created_at: datetime = Field(default_factory=datetime.utcnow)
     creator_id: int = Field(foreign_key="user.id")
+    embedding: list[float] | None = Field(
+        default=None, sa_column=Column(Vector(384)), exclude=True)
 
 
 class PathPurchase(SQLModel, table=True):

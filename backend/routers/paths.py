@@ -20,6 +20,14 @@ async def create_paths(body: PathIn, session: Session = Depends(get_session), cu
     return new_path
 
 
+@router.get("/paths/search", tags=["paths"])
+async def search_paths(q: str, session: Session = Depends(get_session), current_user=Depends(get_current_user)):
+    query_vector = embed(q)
+    results = session.exec(select(Path).order_by(
+        Path.embedding.cosine_distance(query_vector))).all()
+    return results
+
+
 @router.get("/paths", tags=["paths"])
 async def list_paths(session: Session = Depends(get_session), current_user=Depends(get_current_user)):
     path = session.exec(select(Path)).all()

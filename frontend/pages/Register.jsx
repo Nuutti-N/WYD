@@ -73,7 +73,7 @@ function Register() {
 
                 <div className="flex gap-1 justify-center text-sm text-gray-400">
                     <p> Already have an account?</p>
-                    <Link to="/login" className="text-violet-400 font-medium">Log in</Link>
+                    <Link to="/Login" className="text-violet-400 font-medium">Log in</Link>
                 </div>
             </form>
 

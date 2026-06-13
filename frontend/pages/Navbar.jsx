@@ -4,6 +4,10 @@ import { Home, PenLine, User, Route } from "lucide-react"
 
 function Navbar() {
     const location = useLocation()
+    const hiddenOn = ["/", "/Register", "/Login"]
+    if (hiddenOn.includes(location.pathname)) {
+        return null
+    }
 
 
 

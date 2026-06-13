@@ -75,7 +75,7 @@ focus:ring-2 focus:ring-violet-500"
                 <button type="submit" className="w-full bg-violet-600 hover:bg-violet-500 text-white font-semibold py-3 rounded-xl transition mt-2">Log in</button>
                 <div className="flex gap-1 justify-center text-sm text-gray-400">
                     <p> Don't have an account?</p>
-                    <Link to="/register" className="text-violet-400 font-medium">Create account</Link>
+                    <Link to="/Register" className="text-violet-400 font-medium">Create account</Link>
                 </div>
             </form>
 

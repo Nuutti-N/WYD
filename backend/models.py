@@ -96,6 +96,15 @@ class Path(SQLModel, table=True):
     creator_id: int = Field(foreign_key="user.id")
     embedding: list[float] | None = Field(
         default=None, sa_column=Column(Vector(384)), exclude=True)
+    # Rich roadmap content. Empty for simple paths so the lean card still works.
+    # Mentor proof is NOT stored here — it's computed live from the creator's
+    # real account (streak + total logged hours) in serialize_paths().
+    difficulty: str | None = None                 # Beginner | Intermediate | Advanced
+    total_hours: int | None = None                # auto-summed from step hours
+    achievements: list[str] = Field(default=[], sa_column=Column(JSON))   # green checkmarks
+    prerequisites: list[str] = Field(default=[], sa_column=Column(JSON))  # yellow section
+    # each step: {title, why, instructions, deliverable, hours, tips}
+    steps: list[dict] = Field(default=[], sa_column=Column(JSON))
 
 
 class PathPurchase(SQLModel, table=True):
@@ -105,8 +114,29 @@ class PathPurchase(SQLModel, table=True):
     purchased_at: datetime = Field(default_factory=datetime.utcnow)
 
 
+class StepIn(BaseModel):
+    title: str
+    why: str = ""           # why this step matters
+    instructions: str = ""  # exactly how to do it
+    deliverable: str = ""   # what you'll have when done
+    hours: float = 0.0
+    tips: str = ""          # pro tips / resources
+
+
 class PathIn(BaseModel):
     title: str
     description: str
     category: str
     price: float
+    difficulty: str | None = None              # Beginner | Intermediate | Advanced
+    achievements: list[str] = []               # "what you'll achieve" checkmarks
+    prerequisites: list[str] = []              # expectations before starting
+    steps: list[StepIn] = []                   # the roadmap
+
+
+class PathSteps(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    path_id: int = Field(foreign_key="path.id")
+    title: str
+    description: str
+    estimated_hours: float

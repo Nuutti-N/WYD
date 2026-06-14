@@ -4,6 +4,8 @@ import api from "../api/client"
 
 const DRAFTS_KEY = "wyd_path_drafts"
 const LIST_TABS = ["All", "Popular", "New"]
+const DIFFICULTIES = ["Beginner", "Intermediate", "Advanced"]
+const EMPTY_STEP = { title: "", why: "", instructions: "", deliverable: "", hours: "", tips: "" }
 
 function Paths() {
     const navigate = useNavigate()
@@ -13,14 +15,20 @@ function Paths() {
     const [activeTab, setActiveTab] = useState("All")
     const [search, setSearch] = useState("")
     const [searchResults, setSearchResults] = useState([])
-    const [title, setTitle] = useState("")
-    const [description, setDescription] = useState("")
-    const [price, setPrice] = useState("")
-    const [category, setCategory] = useState("")
     const [owned, setOwned] = useState([])
     const [success, setSuccess] = useState("")
     const [userCategory, setUserCategory] = useState("")
     const [drafts, setDrafts] = useState([])
+
+    // ---- create-form state (one long page) ----
+    const [title, setTitle] = useState("")
+    const [description, setDescription] = useState("")
+    const [price, setPrice] = useState("")
+    const [category, setCategory] = useState("")
+    const [difficulty, setDifficulty] = useState("Beginner")
+    const [achievements, setAchievements] = useState([""])
+    const [prerequisites, setPrerequisites] = useState([""])
+    const [steps, setSteps] = useState([{ ...EMPTY_STEP }])
 
     // load local drafts once
     useEffect(() => {
@@ -28,17 +36,28 @@ function Paths() {
         if (saved) setDrafts(JSON.parse(saved))
     }, [])
 
+    // load which paths the user already unlocked (so "Enrolled" survives reload)
+    useEffect(() => {
+        async function fetchOwned() {
+            try {
+                const response = await api.get("/paths/owned")
+                setOwned(response.data || [])
+            } catch (err) {
+                setOwned([])
+            }
+        }
+        fetchOwned()
+    }, [])
+
     useEffect(() => {
         async function fetchSearch() {
             try {
                 const response = await api.get(`/paths/search?q=${search}`)
                 setSearchResults(response.data)
-
-            }
-            catch (err) {
+            } catch (err) {
             }
         }
-        fetchSearch()
+        if (search) fetchSearch()
     }, [search])
 
     // load the user's dream category once (used to float their paths to the top)
@@ -82,10 +101,59 @@ function Paths() {
         setDescription("")
         setCategory("")
         setPrice("")
+        setDifficulty("Beginner")
+        setAchievements([""])
+        setPrerequisites([""])
+        setSteps([{ ...EMPTY_STEP }])
+    }
+
+    // ---- small list editors (achievements + prerequisites) ----
+    function updateListItem(list, setList, i, value) {
+        setList(list.map((item, idx) => (idx === i ? value : item)))
+    }
+    function addListItem(list, setList) {
+        setList([...list, ""])
+    }
+    function removeListItem(list, setList, i) {
+        setList(list.filter((_, idx) => idx !== i))
+    }
+
+    // ---- steps editor ----
+    function updateStep(i, field, value) {
+        setSteps(steps.map((s, idx) => (idx === i ? { ...s, [field]: value } : s)))
+    }
+    function addStep() {
+        setSteps([...steps, { ...EMPTY_STEP }])
+    }
+    function removeStep(i) {
+        setSteps(steps.filter((_, idx) => idx !== i))
+    }
+
+    // build the payload the backend expects (drops blank list items)
+    function buildPayload() {
+        return {
+            title,
+            description,
+            category,
+            price: parseFloat(price) || 0,
+            difficulty,
+            achievements: achievements.map(a => a.trim()).filter(Boolean),
+            prerequisites: prerequisites.map(p => p.trim()).filter(Boolean),
+            steps: steps
+                .filter(s => s.title.trim())
+                .map(s => ({
+                    title: s.title,
+                    why: s.why,
+                    instructions: s.instructions,
+                    deliverable: s.deliverable,
+                    hours: parseFloat(s.hours) || 0,
+                    tips: s.tips,
+                })),
+        }
     }
 
     function saveAsDraft() {
-        const draft = { id: `draft-${Date.now()}`, title, description, category, price }
+        const draft = { id: `draft-${Date.now()}`, ...buildPayload() }
         saveDrafts([...drafts, draft])
         clearForm()
         setSuccess("Saved as draft.")
@@ -95,7 +163,7 @@ function Paths() {
     async function createPath() {
         setError("")
         try {
-            await api.post("/paths", { title, description, category, price })
+            await api.post("/paths", buildPayload())
             clearForm()
             setSuccess("Path published!")
             setActiveTab("All")
@@ -107,12 +175,8 @@ function Paths() {
     async function publishDraft(draft) {
         setError("")
         try {
-            await api.post("/paths", {
-                title: draft.title,
-                description: draft.description,
-                category: draft.category,
-                price: draft.price,
-            })
+            const { id, ...payload } = draft
+            await api.post("/paths", payload)
             saveDrafts(drafts.filter(d => d.id !== draft.id))
             setSuccess("Draft published!")
             fetchPaths()
@@ -125,23 +189,16 @@ function Paths() {
         saveDrafts(drafts.filter(d => d.id !== id))
     }
 
-    async function buyPath(id) {
-        setError("")
-        try {
-            await api.post(`/paths/${id}/buy`)
-            setOwned([...owned, id])
-        } catch (err) {
-            setError("Couldn't complete purchase. Try again.")
-        }
-    }
-
     // sort a list based on the active tab + the user's category
     function sortPaths(list) {
         const result = [...list]
         if (activeTab === "New") {
             result.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         }
-        if (userCategory && (activeTab === "All" || activeTab === "Popular")) {
+        if (activeTab === "Popular") {
+            result.sort((a, b) => (b.enrolled || 0) - (a.enrolled || 0))
+        }
+        if (userCategory && activeTab === "All") {
             result.sort((a, b) => {
                 const aMine = a.category?.toLowerCase() === userCategory.toLowerCase() ? 0 : 1
                 const bMine = b.category?.toLowerCase() === userCategory.toLowerCase() ? 0 : 1
@@ -155,11 +212,13 @@ function Paths() {
 
     const subtitle = {
         All: "Find a roadmap to reach your dream faster.",
-        Popular: "Most loved paths (ranking coming soon).",
+        Popular: "Most enrolled paths.",
         New: "Freshly published roadmaps.",
         "My paths": "Your published paths and drafts.",
         Create: "Share a step-by-step roadmap others can follow.",
     }[activeTab]
+
+    const inputClass = "w-full bg-gray-800 text-white placeholder-gray-500 border border-gray-700 rounded-xl px-3 py-3 focus:outline-none focus:ring-2 focus:ring-violet-500"
 
     return (
         <div className="min-h-screen bg-gray-950 flex flex-col">
@@ -204,45 +263,109 @@ function Paths() {
                     </div>
                 )}
 
+                {/* ---------- CREATE: one long builder page ---------- */}
                 {activeTab === "Create" && (
-                    <div className="flex flex-col gap-1 bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
-                        <label className="text-sm font-medium text-gray-300">Title</label>
-                        <input
-                            value={title}
-                            placeholder="e.g. 0 to junior dev in 6 months"
-                            onChange={e => setTitle(e.target.value)}
-                            className="w-full bg-gray-800 text-white placeholder-gray-500 border border-gray-700 rounded-xl px-3 py-3 focus:outline-none focus:ring-2 focus:ring-violet-500 mb-4" />
-                        <label className="text-sm font-medium text-gray-300">Description</label>
-                        <input
-                            value={description}
-                            placeholder="Tell people what they'll learn from your path..."
-                            onChange={e => setDescription(e.target.value)}
-                            className="w-full bg-gray-800 text-white placeholder-gray-500 border border-gray-700 rounded-xl px-3 py-3 focus:outline-none focus:ring-2 focus:ring-violet-500 mb-4" />
-                        <label className="text-sm font-medium text-gray-300">Category</label>
-                        <input
-                            value={category}
-                            placeholder="Tech, Business, Fitness..."
-                            onChange={e => setCategory(e.target.value)}
-                            className="w-full bg-gray-800 text-white placeholder-gray-500 border border-gray-700 rounded-xl px-3 py-3 focus:outline-none focus:ring-2 focus:ring-violet-500 mb-4" />
-                        <label className="text-sm font-medium text-gray-300">Price €</label>
-                        <input
-                            value={price}
-                            placeholder="19"
-                            onChange={e => setPrice(e.target.value)}
-                            className="w-full bg-gray-800 text-white placeholder-gray-500 border border-gray-700 rounded-xl px-3 py-3 focus:outline-none focus:ring-2 focus:ring-violet-500 mb-4" />
-                        <div className="flex gap-3 mt-2">
-                            <button
-                                onClick={saveAsDraft}
-                                className="flex-1 bg-zinc-700 hover:bg-zinc-600 text-white font-semibold py-3 rounded-xl transition"
-                            >Save as draft</button>
-                            <button
-                                onClick={createPath}
-                                className="flex-1 bg-violet-600 hover:bg-violet-500 text-white font-semibold py-3 rounded-xl transition"
-                            >Publish path</button>
+                    <div className="flex flex-col gap-6 pb-10">
+                        {/* basics */}
+                        <div className="flex flex-col gap-3 bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+                            <label className="text-sm font-medium text-gray-300">Title</label>
+                            <input value={title} placeholder="e.g. 0 to junior dev in 6 months"
+                                onChange={e => setTitle(e.target.value)} className={inputClass} />
+                            <label className="text-sm font-medium text-gray-300">Description</label>
+                            <input value={description} placeholder="What people will achieve from your path..."
+                                onChange={e => setDescription(e.target.value)} className={inputClass} />
+                            <label className="text-sm font-medium text-gray-300">Category</label>
+                            <input value={category} placeholder="Tech, Business, Fitness..."
+                                onChange={e => setCategory(e.target.value)} className={inputClass} />
+                            <div className="flex gap-3">
+                                <div className="flex-1">
+                                    <label className="text-sm font-medium text-gray-300">Difficulty</label>
+                                    <select value={difficulty} onChange={e => setDifficulty(e.target.value)}
+                                        className={inputClass + " mt-1"}>
+                                        {DIFFICULTIES.map(d => <option key={d} value={d}>{d}</option>)}
+                                    </select>
+                                </div>
+                                <div className="w-24">
+                                    <label className="text-sm font-medium text-gray-300">Price €</label>
+                                    <input value={price} placeholder="0" inputMode="decimal"
+                                        onChange={e => setPrice(e.target.value)} className={inputClass + " mt-1"} />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* what you'll achieve */}
+                        <div className="flex flex-col gap-2 bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+                            <h3 className="text-white font-semibold">What you'll achieve</h3>
+                            <p className="text-zinc-500 text-xs mb-1">The wins someone gets by finishing.</p>
+                            {achievements.map((item, i) => (
+                                <div key={i} className="flex gap-2">
+                                    <input value={item} placeholder="A working SaaS with paying users"
+                                        onChange={e => updateListItem(achievements, setAchievements, i, e.target.value)}
+                                        className={inputClass} />
+                                    <button onClick={() => removeListItem(achievements, setAchievements, i)}
+                                        className="px-3 rounded-xl bg-zinc-800 text-zinc-400 hover:text-white">✕</button>
+                                </div>
+                            ))}
+                            <button onClick={() => addListItem(achievements, setAchievements)}
+                                className="text-violet-400 text-sm text-left mt-1">+ add achievement</button>
+                        </div>
+
+                        {/* prerequisites */}
+                        <div className="flex flex-col gap-2 bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+                            <h3 className="text-white font-semibold">Prerequisites</h3>
+                            <p className="text-zinc-500 text-xs mb-1">What people should have before starting.</p>
+                            {prerequisites.map((item, i) => (
+                                <div key={i} className="flex gap-2">
+                                    <input value={item} placeholder="Basic computer skills"
+                                        onChange={e => updateListItem(prerequisites, setPrerequisites, i, e.target.value)}
+                                        className={inputClass} />
+                                    <button onClick={() => removeListItem(prerequisites, setPrerequisites, i)}
+                                        className="px-3 rounded-xl bg-zinc-800 text-zinc-400 hover:text-white">✕</button>
+                                </div>
+                            ))}
+                            <button onClick={() => addListItem(prerequisites, setPrerequisites)}
+                                className="text-violet-400 text-sm text-left mt-1">+ add prerequisite</button>
+                        </div>
+
+                        {/* roadmap steps */}
+                        <div className="flex flex-col gap-3 bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+                            <h3 className="text-white font-semibold">Roadmap steps</h3>
+                            <p className="text-zinc-500 text-xs">Each step: what to do, why it matters, what they'll have after.</p>
+                            {steps.map((step, i) => (
+                                <div key={i} className="border border-zinc-700 rounded-xl p-4 flex flex-col gap-2">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-violet-400 text-xs font-semibold">Step {i + 1}</span>
+                                        <button onClick={() => removeStep(i)} className="text-zinc-500 hover:text-white text-sm">✕</button>
+                                    </div>
+                                    <input value={step.title} placeholder="Step title"
+                                        onChange={e => updateStep(i, "title", e.target.value)} className={inputClass} />
+                                    <input value={step.why} placeholder="Why this step matters"
+                                        onChange={e => updateStep(i, "why", e.target.value)} className={inputClass} />
+                                    <textarea value={step.instructions} placeholder="Exactly how to do it..."
+                                        onChange={e => updateStep(i, "instructions", e.target.value)} rows={3} className={inputClass} />
+                                    <input value={step.deliverable} placeholder="What you'll have when done"
+                                        onChange={e => updateStep(i, "deliverable", e.target.value)} className={inputClass} />
+                                    <div className="flex gap-2">
+                                        <input value={step.hours} placeholder="Hours" inputMode="decimal"
+                                            onChange={e => updateStep(i, "hours", e.target.value)} className={inputClass + " w-28"} />
+                                        <input value={step.tips} placeholder="Pro tips / resources"
+                                            onChange={e => updateStep(i, "tips", e.target.value)} className={inputClass} />
+                                    </div>
+                                </div>
+                            ))}
+                            <button onClick={addStep} className="text-violet-400 text-sm text-left">+ add step</button>
+                        </div>
+
+                        <div className="flex gap-3">
+                            <button onClick={saveAsDraft}
+                                className="flex-1 bg-zinc-700 hover:bg-zinc-600 text-white font-semibold py-3 rounded-xl transition">Save as draft</button>
+                            <button onClick={createPath}
+                                className="flex-1 bg-violet-600 hover:bg-violet-500 text-white font-semibold py-3 rounded-xl transition">Publish path</button>
                         </div>
                     </div>
                 )}
 
+                {/* ---------- MY PATHS: drafts ---------- */}
                 {activeTab === "My paths" && (
                     <div className="flex flex-col">
                         {drafts
@@ -266,6 +389,7 @@ function Paths() {
                     </div>
                 )}
 
+                {/* ---------- LISTS: rich clickable cards ---------- */}
                 {activeTab !== "Create" && (
                     <div className="flex flex-col">
                         {loading && (
@@ -286,26 +410,50 @@ function Paths() {
 
                         {!loading && visiblePaths.map(path => {
                             const isMine = userCategory && path.category?.toLowerCase() === userCategory.toLowerCase()
+                            const isOwned = owned.includes(path.id)
                             return (
-                                <div key={path.id} className="rounded-2xl bg-zinc-800 border border-purple-800 p-4 mb-3">
+                                <div key={path.id}
+                                    onClick={() => navigate(`/Path/${path.id}`)}
+                                    className="rounded-2xl bg-zinc-800 border border-purple-800 p-4 mb-3 cursor-pointer hover:border-purple-600 transition">
                                     <div className="flex items-start justify-between gap-3">
                                         <h2 className="text-white font-semibold text-base leading-snug">{path.title}</h2>
-                                        <span className="shrink-0 bg-purple-500/15 text-purple-300 font-semibold text-sm px-3 py-1 rounded-full">€{path.price}</span>
+                                        <span className="shrink-0 bg-purple-500/15 text-purple-300 font-semibold text-sm px-3 py-1 rounded-full">
+                                            {path.price > 0 ? `€${path.price}` : "Free"}
+                                        </span>
                                     </div>
-                                    <div className="flex items-center gap-2 mt-2">
+
+                                    <div className="flex items-center gap-2 mt-2 flex-wrap">
                                         <span className="inline-block text-purple-400 text-xs font-medium uppercase tracking-wide">{path.category}</span>
+                                        {path.difficulty && (
+                                            <span className="text-[10px] bg-zinc-700 text-zinc-300 px-2 py-0.5 rounded-full">{path.difficulty}</span>
+                                        )}
                                         {isMine && activeTab !== "My paths" && (
                                             <span className="text-[10px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full uppercase tracking-wide">Your category</span>
                                         )}
+                                        {isOwned && (
+                                            <span className="text-[10px] bg-green-500/20 text-green-300 px-2 py-0.5 rounded-full uppercase tracking-wide">Enrolled</span>
+                                        )}
                                     </div>
-                                    <p className="text-zinc-400 text-sm mt-2 mb-4">{path.description}</p>
-                                    {activeTab !== "My paths" && (
-                                        <button onClick={() => buyPath(path.id)}
-                                            disabled={owned.includes(path.id)}
-                                            className="w-full bg-violet-600 hover:bg-violet-500 text-white font-semibold py-2.5 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed">
-                                            {owned.includes(path.id) ? "Owned" : "Select"}
-                                        </button>
+
+                                    {path.achievements?.length > 0 && (
+                                        <p className="text-green-400 text-sm mt-2">✓ You will achieve: {path.achievements[0]}</p>
                                     )}
+
+                                    <p className="text-zinc-400 text-sm mt-2 mb-3 line-clamp-2">{path.description}</p>
+
+                                    {/* mentor proof */}
+                                    <div className="flex items-center gap-2 text-xs text-zinc-400 mb-3">
+                                        <span className="bg-violet-500/20 text-violet-300 px-2 py-0.5 rounded-full font-medium">Mentor</span>
+                                        <span className="text-zinc-300">{path.mentor_name}</span>
+                                        <span>🔥 {path.mentor_streak || 0}</span>
+                                        <span>⏱ {path.mentor_hours || 0}h</span>
+                                    </div>
+
+                                    {/* footer stats */}
+                                    <div className="flex items-center gap-3 text-xs text-zinc-500 border-t border-zinc-700 pt-3">
+                                        {path.total_hours ? <span>⏱ {path.total_hours}h</span> : null}
+                                        <span>👥 {path.enrolled || 0} enrolled</span>
+                                    </div>
                                 </div>
                             )
                         })}

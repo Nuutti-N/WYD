@@ -113,8 +113,60 @@ function PathDetail() {
                     </div>
                 )}
 
-                {/* piece 4: roadmap accordion goes here */}
+                {/* roadmap — tap a step to expand (accordion) */}
+                {path.steps?.length > 0 && (
+                    <div className="mt-6">
+                        <h3 className="text-white font-semibold mb-3">Roadmap</h3>
+                        <div className="flex flex-col gap-2">
+                            {path.steps.map((step, i) => (
+                                <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+                                    {/* step header — tap to open/close */}
+                                    <button
+                                        onClick={() => setOpenStep(openStep === i ? null : i)}
+                                        className="w-full flex items-center justify-between gap-3 p-4 text-left">
+                                        <span className="text-white text-sm font-medium">
+                                            <span className="text-violet-400">Step {i + 1}</span> · {step.title}
+                                        </span>
+                                        <span className="text-zinc-500 text-xs shrink-0">
+                                            {step.hours ? `${step.hours}h ` : ""}{openStep === i ? "▾" : "▸"}
+                                        </span>
+                                    </button>
 
+                                    {/* step body — only shows when this step is open */}
+                                    {openStep === i && (
+                                        <div className="px-4 pb-4 flex flex-col gap-3 text-sm">
+                                            {step.why && (
+                                                <p className="text-zinc-400"><span className="text-zinc-200 font-medium">Why: </span>{step.why}</p>
+                                            )}
+                                            {step.instructions && (
+                                                <p className="text-zinc-400"><span className="text-zinc-200 font-medium">How: </span>{step.instructions}</p>
+                                            )}
+                                            {step.deliverable && (
+                                                <p className="text-green-400">✓ You'll have: {step.deliverable}</p>
+                                            )}
+                                            {step.tips && (
+                                                <p className="text-violet-300">💡 {step.tips}</p>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+            </div>
+
+            {/* sticky enroll button — always visible, even at the top */}
+            <div className="fixed bottom-0 left-0 right-0 bg-gray-950/95 border-t border-zinc-800 p-4">
+                <div className="max-w-md mx-auto">
+                    <button
+                        onClick={enroll}
+                        disabled={owned}
+                        className="w-full bg-violet-600 hover:bg-violet-500 text-white font-semibold py-3 rounded-xl transition disabled:opacity-60 disabled:cursor-not-allowed">
+                        {owned ? "Enrolled ✓" : paid ? `Unlock €${path.price}` : "Start this path"}
+                    </button>
+                </div>
             </div>
         </div>
     )

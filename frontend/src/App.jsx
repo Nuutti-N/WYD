@@ -9,6 +9,7 @@ import Profile from "../pages/Profile"
 import Navbar from "../pages/Navbar"
 import Path from "../pages/Path"
 import Landing from "../pages/Landing"
+import PathDetail from "../pages/PathDetail"
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/Register" element={<Register />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/" element={<Landing />} />
+        <Route path="/Path/:id" element={<PathDetail />} />
       </Routes>
     </BrowserRouter>
   )

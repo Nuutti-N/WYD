@@ -85,7 +85,35 @@ function PathDetail() {
 
                 <p className="text-zinc-400 text-sm mt-4">{path.description}</p>
 
-                {/* piece 3: achievements + prerequisites go here */}
+                {/* what you'll achieve (green) */}
+                {path.achievements?.length > 0 && (
+                    <div className="bg-green-500/10 border border-green-700 rounded-2xl p-4 mt-5">
+                        <h3 className="text-green-400 font-semibold text-sm mb-2">What you'll achieve</h3>
+                        <ul className="flex flex-col gap-1">
+                            {path.achievements.map((a, i) => (
+                                <li key={i} className="text-green-300 text-sm flex gap-2">
+                                    <span>✓</span><span>{a}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+
+                {/* prerequisites (yellow) */}
+                {path.prerequisites?.length > 0 && (
+                    <div className="bg-yellow-500/10 border border-yellow-700 rounded-2xl p-4 mt-4">
+                        <h3 className="text-yellow-400 font-semibold text-sm mb-2">Prerequisites</h3>
+                        <ul className="flex flex-col gap-1">
+                            {path.prerequisites.map((p, i) => (
+                                <li key={i} className="text-yellow-200 text-sm flex gap-2">
+                                    <span>•</span><span>{p}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+
+                {/* piece 4: roadmap accordion goes here */}
 
             </div>
         </div>

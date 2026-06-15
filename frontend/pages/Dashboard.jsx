@@ -23,19 +23,28 @@ function Home() {
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(true)
     const [stats, setStats] = useState(null)
+    const [user, setUser] = useState(null)
+    const [dream, setDream] = useState(null)
 
     useEffect(() => {
         async function dashboard() {
             try {
-                const response = await api.get("/checkins/stats")
-                setStats(response.data)
+                // run all three at once — faster than awaiting one by one.
+                // /dream_info 404s if the user hasn't picked a dream yet, so
+                // we catch it to null instead of failing the whole load.
+                const [statsRes, meRes, dreamRes] = await Promise.all([
+                    api.get("/checkins/stats"),
+                    api.get("/me"),
+                    api.get("/dream_info").catch(() => null),
+                ])
+                setStats(statsRes.data)
+                setUser(meRes.data)
+                if (dreamRes) setDream(dreamRes.data)
             } catch (err) {
-                setError("here is not stats")
+                setError("Couldn't load your dashboard")
             } finally {
                 setLoading(false)
             }
-
-
         }
         dashboard()
     }, [])
@@ -46,10 +55,19 @@ function Home() {
         <div className="min-h-screen bg-gray-950 flex flex-col">
             <div className="px-6 max-w-md mx-auto pt-22 flex flex-col flex-1">
                 <div className="">
-                    <p className="text-zinc-500 text-base">{getTimeOfDay()}</p>
+                    <p className="text-zinc-500 text-base">{getTimeOfDay()}, {name}</p>
                     <h1 className="text-white font-semibold text-lg">WYD</h1>
                 </div>
-                <div className="w-full rounded-2xl bg-[linear-gradient(135deg,#1a1730,#2a1f4a)] border border-purple-800 p-4 flex items-center justify-between ">
+                {dream && dream.specific_items?.length > 0 && (
+                    <div className="mt-4 rounded-2xl bg-zinc-900 border border-zinc-800 p-4">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-violet-400">Your dream</p>
+                        <p className="text-white font-semibold text-lg mt-1">
+                            {dream.specific_items.join(" · ")}
+                        </p>
+                        <span className="inline-block text-xs text-gray-500 mt-2 px-2 py-0.5 rounded-full bg-zinc-800">{dream.category}</span>
+                    </div>
+                )}
+                <div className="mt-4 w-full rounded-2xl bg-[linear-gradient(135deg,#1a1730,#2a1f4a)] border border-purple-800 p-4 flex items-center justify-between ">
                     <StatTile
                         label="Day Streak"
                         value={stats.streak}

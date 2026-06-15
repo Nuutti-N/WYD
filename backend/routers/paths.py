@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import select
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from backend.routers.users import get_current_user
 from backend.database import Session, get_session
 from backend.models import Path, PathIn, PathPurchase, User, Checkin
-from backend.embedding import embed
 
 router = APIRouter()
 
@@ -43,11 +42,12 @@ def serialize_paths(paths: list[Path], session: Session) -> list[dict]:
 
     out = []
     for p in paths:
-        data = p.model_dump()  # embedding is excluded on the model
+        data = p.model_dump()
         data["enrolled"] = counts.get(p.id, 0)
         u = users.get(p.creator_id)
         if u:
-            data["mentor_name"] = u.username or u.full_name or u.email.split("@")[0]
+            data["mentor_name"] = u.username or u.full_name or u.email.split(
+                "@")[0]
         else:
             data["mentor_name"] = "Mentor"
         data["mentor_streak"] = u.streak if u else 0
@@ -72,10 +72,6 @@ async def create_paths(body: PathIn, session: Session = Depends(get_session), cu
         prerequisites=body.prerequisites,
         steps=steps,
     )
-    # index title + description + category + achievements + step titles for search
-    parts = [body.title, body.description, body.category] + \
-        body.achievements + [s["title"] for s in steps]
-    new_path.embedding = embed(" ".join(parts))
     session.add(new_path)
     session.commit()
     session.refresh(new_path)
@@ -84,9 +80,16 @@ async def create_paths(body: PathIn, session: Session = Depends(get_session), cu
 
 @router.get("/paths/search", tags=["paths"])
 async def search_paths(q: str, session: Session = Depends(get_session), current_user=Depends(get_current_user)):
-    query_vector = embed(q)
-    results = session.exec(select(Path).order_by(
-        Path.embedding.cosine_distance(query_vector))).all()
+    like = f"%{q}%"
+    results = session.exec(
+        select(Path).where(
+            or_(
+                Path.title.ilike(like),
+                Path.description.ilike(like),
+                Path.category.ilike(like),
+            )
+        )
+    ).all()
     return serialize_paths(results, session)
 
 

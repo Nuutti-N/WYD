@@ -2,7 +2,6 @@ from pydantic import BaseModel, EmailStr, Field as PydanticField
 from sqlmodel import SQLModel, Field
 from sqlalchemy import Column, JSON
 from datetime import datetime, date
-from pgvector.sqlalchemy import Vector
 
 
 class User(SQLModel, table=True):
@@ -94,15 +93,16 @@ class Path(SQLModel, table=True):
     price: float
     created_at: datetime = Field(default_factory=datetime.utcnow)
     creator_id: int = Field(foreign_key="user.id")
-    embedding: list[float] | None = Field(
-        default=None, sa_column=Column(Vector(384)), exclude=True)
     # Rich roadmap content. Empty for simple paths so the lean card still works.
     # Mentor proof is NOT stored here — it's computed live from the creator's
     # real account (streak + total logged hours) in serialize_paths().
-    difficulty: str | None = None                 # Beginner | Intermediate | Advanced
+    # Beginner | Intermediate | Advanced
+    difficulty: str | None = None
     total_hours: int | None = None                # auto-summed from step hours
-    achievements: list[str] = Field(default=[], sa_column=Column(JSON))   # green checkmarks
-    prerequisites: list[str] = Field(default=[], sa_column=Column(JSON))  # yellow section
+    achievements: list[str] = Field(
+        default=[], sa_column=Column(JSON))   # green checkmarks
+    prerequisites: list[str] = Field(
+        default=[], sa_column=Column(JSON))  # yellow section
     # each step: {title, why, instructions, deliverable, hours, tips}
     steps: list[dict] = Field(default=[], sa_column=Column(JSON))
 
@@ -129,7 +129,8 @@ class PathIn(BaseModel):
     category: str
     price: float
     difficulty: str | None = None              # Beginner | Intermediate | Advanced
-    achievements: list[str] = []               # "what you'll achieve" checkmarks
+    # "what you'll achieve" checkmarks
+    achievements: list[str] = []
     prerequisites: list[str] = []              # expectations before starting
     steps: list[StepIn] = []                   # the roadmap
 

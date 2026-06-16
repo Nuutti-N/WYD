@@ -8,6 +8,7 @@ function PathDetail() {
     const [path, setPath] = useState(null)     // the one path we show
     const [owned, setOwned] = useState(false)  // do I already own it?
     const [openStep, setOpenStep] = useState(null)  // which step is expanded
+    const [done, setDone] = useState([])       // indices of steps I've checked off
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(true)
 
@@ -16,6 +17,7 @@ function PathDetail() {
             try {
                 const res = await api.get(`/paths/${id}`)        // get this path
                 setPath(res.data)
+                setDone(res.data.completed_steps || [])          // steps I finished
                 const ownedRes = await api.get("/paths/owned")   // get my owned ids
                 setOwned((ownedRes.data || []).includes(Number(id)))
             } catch (err) {
@@ -33,6 +35,17 @@ function PathDetail() {
             setOwned(true)                       // flip button to "Enrolled"
         } catch (err) {
             setError("Couldn't enroll. Try again.")
+        }
+    }
+
+    // check / uncheck a roadmap step (only once enrolled)
+    async function toggleStep(i) {
+        if (!owned) return
+        try {
+            const res = await api.post(`/paths/${id}/steps/${i}/toggle`)
+            setDone(res.data.completed_steps || [])
+        } catch (err) {
+            setError("Couldn't update that step. Try again.")
         }
     }
 
@@ -113,24 +126,44 @@ function PathDetail() {
                     </div>
                 )}
 
-                {/* roadmap — tap a step to expand (accordion) */}
+                {/* roadmap — tap a step to expand (accordion), tick the circle to complete */}
                 {path.steps?.length > 0 && (
                     <div className="mt-6">
-                        <h3 className="text-white font-semibold mb-3">Roadmap</h3>
+                        <div className="flex items-center justify-between mb-2">
+                            <h3 className="text-white font-semibold">Roadmap</h3>
+                            <span className="text-xs text-zinc-400">{done.length} / {path.steps.length} done</span>
+                        </div>
+                        {/* progress bar — fills as steps get checked off */}
+                        <div className="w-full bg-zinc-800 rounded-full h-2 mb-4">
+                            <div className="bg-violet-500 h-2 rounded-full transition-all"
+                                style={{ width: `${(done.length / path.steps.length) * 100}%` }} />
+                        </div>
                         <div className="flex flex-col gap-2">
                             {path.steps.map((step, i) => (
                                 <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-                                    {/* step header — tap to open/close */}
-                                    <button
-                                        onClick={() => setOpenStep(openStep === i ? null : i)}
-                                        className="w-full flex items-center justify-between gap-3 p-4 text-left">
-                                        <span className="text-white text-sm font-medium">
-                                            <span className="text-violet-400">Step {i + 1}</span> · {step.title}
-                                        </span>
-                                        <span className="text-zinc-500 text-xs shrink-0">
-                                            {step.hours ? `${step.hours}h ` : ""}{openStep === i ? "▾" : "▸"}
-                                        </span>
-                                    </button>
+                                    {/* step header — check circle + tappable title that opens/closes */}
+                                    <div className="w-full flex items-center gap-3 p-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleStep(i)}
+                                            disabled={!owned}
+                                            className={`shrink-0 w-6 h-6 rounded-full border flex items-center justify-center text-xs ${done.includes(i)
+                                                ? "bg-green-500 border-green-500 text-white"
+                                                : "border-zinc-600 text-transparent"} ${owned ? "" : "opacity-40 cursor-not-allowed"}`}>
+                                            ✓
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setOpenStep(openStep === i ? null : i)}
+                                            className="flex-1 flex items-center justify-between gap-3 text-left">
+                                            <span className={`text-sm font-medium ${done.includes(i) ? "text-zinc-500 line-through" : "text-white"}`}>
+                                                <span className="text-violet-400">Step {i + 1}</span> · {step.title}
+                                            </span>
+                                            <span className="text-zinc-500 text-xs shrink-0">
+                                                {step.hours ? `${step.hours}h ` : ""}{openStep === i ? "▾" : "▸"}
+                                            </span>
+                                        </button>
+                                    </div>
 
                                     {/* step body — only shows when this step is open */}
                                     {openStep === i && (

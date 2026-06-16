@@ -113,12 +113,37 @@ async def owned_paths(session: Session = Depends(get_session), current_user=Depe
     return rows
 
 
+@router.get("/paths/active", tags=["paths"], summary="The user's current roadmap + progress for the dashboard")
+async def active_path(session: Session = Depends(get_session), current_user=Depends(get_current_user)):
+    # "active" = the most recently enrolled path. Simple, no extra column needed.
+    purchase = session.exec(
+        select(PathPurchase)
+        .where(PathPurchase.user_id == current_user.id)
+        .order_by(PathPurchase.purchased_at.desc())
+    ).first()
+    if not purchase:
+        return None
+    path = session.exec(select(Path).where(Path.id == purchase.path_id)).first()
+    if not path:
+        return None
+    data = serialize_paths([path], session)[0]
+    data["completed_steps"] = purchase.completed_steps
+    data["completed"] = len(purchase.completed_steps)
+    data["total"] = len(path.steps or [])
+    return data
+
+
 @router.get("/paths/{id}", tags=["paths"])
 async def paths_id(id: int, session: Session = Depends(get_session), current_user=Depends(get_current_user)):
     path = session.exec(select(Path).where(Path.id == id)).first()
     if not path:
         raise HTTPException(status_code=404, detail="Nothing found")
-    return serialize_paths([path], session)[0]
+    data = serialize_paths([path], session)[0]
+    # if this user enrolled, tell the frontend which steps they've checked off
+    purchase = session.exec(select(PathPurchase).where(
+        PathPurchase.user_id == current_user.id, PathPurchase.path_id == id)).first()
+    data["completed_steps"] = purchase.completed_steps if purchase else []
+    return data
 
 
 @router.delete("/paths/{id}", tags=["paths"])
@@ -147,3 +172,21 @@ async def buy_path(id: int, session: Session = Depends(get_session), current_use
     session.add(purchase)
     session.commit()
     return {"message": "Path unlocked"}
+
+
+@router.post("/paths/{id}/steps/{index}/toggle", tags=["paths"], summary="Check / uncheck a roadmap step")
+async def toggle_step(id: int, index: int, session: Session = Depends(get_session), current_user=Depends(get_current_user)):
+    purchase = session.exec(select(PathPurchase).where(
+        PathPurchase.user_id == current_user.id, PathPurchase.path_id == id)).first()
+    if not purchase:
+        raise HTTPException(status_code=404, detail="Enroll in this path first")
+    # rebuild a fresh list so SQLAlchemy notices the JSON column changed
+    done = list(purchase.completed_steps)
+    if index in done:
+        done.remove(index)
+    else:
+        done.append(index)
+    purchase.completed_steps = done
+    session.add(purchase)
+    session.commit()
+    return {"completed_steps": done}

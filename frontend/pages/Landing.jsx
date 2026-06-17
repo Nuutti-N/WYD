@@ -27,18 +27,18 @@ function Landing() {
             </section>
 
             {/* Placeholder sections — fill these in later */}
-            <section id="features" className="scroll-mt-20 max-w-3xl mx-auto px-6 py-24">
-                <h2 className="text-3xl font-bold text-white mb-3">Features</h2>
+            <section id="edge" className="scroll-mt-20 max-w-3xl mx-auto px-6 py-24">
+                <h2 className="text-3xl font-bold text-white mb-3">The Edge</h2>
                 <p className="text-gray-400">Coming soon — what makes WYD different.</p>
             </section>
 
-            <section id="how" className="scroll-mt-20 max-w-3xl mx-auto px-6 py-24">
-                <h2 className="text-3xl font-bold text-white mb-3">How it works</h2>
+            <section id="journey" className="scroll-mt-20 max-w-3xl mx-auto px-6 py-24">
+                <h2 className="text-3xl font-bold text-white mb-3">The Journey</h2>
                 <p className="text-gray-400">Coming soon — pick a path, log daily, climb the leaderboard.</p>
             </section>
 
-            <section id="pricing" className="scroll-mt-20 max-w-3xl mx-auto px-6 py-24">
-                <h2 className="text-3xl font-bold text-white mb-3">Pricing</h2>
+            <section id="premium" className="scroll-mt-20 max-w-3xl mx-auto px-6 py-24">
+                <h2 className="text-3xl font-bold text-white mb-3">WYD Premium</h2>
                 <p className="text-gray-400">Coming soon — start free.</p>
             </section>
         </div>

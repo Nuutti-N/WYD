@@ -112,8 +112,6 @@ class PathPurchase(SQLModel, table=True):
     user_id: int = Field(foreign_key="user.id")
     path_id: int = Field(foreign_key="path.id")
     purchased_at: datetime = Field(default_factory=datetime.utcnow)
-    # which steps of this path the user has checked off, stored by their
-    # index in Path.steps (steps are a JSON list with no IDs of their own)
     completed_steps: list[int] = Field(default=[], sa_column=Column(JSON))
 
 

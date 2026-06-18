@@ -50,7 +50,7 @@ async def checkins_stats(session: Session = Depends(get_session), current_user=D
     xp_next_level = thresholds[level]
     all_checkins = session.exec(select(Checkin).where(
         Checkin.user_id == current_user.id)).all()
-    total_hours = sum(app.hours for app in all_checkins)
+    total_hours = sum(checkin.hours for checkin in all_checkins)
     if current_user.last_checkin_date == date.today() - timedelta(days=1) or current_user.last_checkin_date == date.today():
         streak = current_user.streak
     else:

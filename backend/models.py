@@ -113,6 +113,10 @@ class PathPurchase(SQLModel, table=True):
     path_id: int = Field(foreign_key="path.id")
     purchased_at: datetime = Field(default_factory=datetime.utcnow)
     completed_steps: list[int] = Field(default=[], sa_column=Column(JSON))
+    # Proof of Work: step index (as string key) -> proof URL the user submitted.
+    # A step counts as "completed" once it has a proof here. Progress is gated:
+    # step i+1 stays locked until step i has a proof.
+    step_proofs: dict = Field(default={}, sa_column=Column(JSON))
 
 
 class StepIn(BaseModel):
@@ -134,6 +138,10 @@ class PathIn(BaseModel):
     achievements: list[str] = []
     prerequisites: list[str] = []              # expectations before starting
     steps: list[StepIn] = []                   # the roadmap
+
+
+class ProofIn(BaseModel):
+    proof_url: str
 
 
 class PathSteps(SQLModel, table=True):

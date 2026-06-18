@@ -8,7 +8,9 @@ function PathDetail() {
     const [path, setPath] = useState(null)     // the one path we show
     const [owned, setOwned] = useState(false)  // do I already own it?
     const [openStep, setOpenStep] = useState(null)  // which step is expanded
-    const [done, setDone] = useState([])       // indices of steps I've checked off
+    const [done, setDone] = useState([])       // indices of steps I've proven
+    const [proofs, setProofs] = useState({})   // { "0": "https://...", ... } step -> proof url
+    const [proofText, setProofText] = useState("")  // url being typed for the open step
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(true)
 
@@ -17,7 +19,8 @@ function PathDetail() {
             try {
                 const res = await api.get(`/paths/${id}`)        // get this path
                 setPath(res.data)
-                setDone(res.data.completed_steps || [])          // steps I finished
+                setDone(res.data.completed_steps || [])          // steps I proved
+                setProofs(res.data.step_proofs || {})            // my proof links
                 const ownedRes = await api.get("/paths/owned")   // get my owned ids
                 setOwned((ownedRes.data || []).includes(Number(id)))
             } catch (err) {
@@ -38,14 +41,25 @@ function PathDetail() {
         }
     }
 
-    // check / uncheck a roadmap step (only once enrolled)
-    async function toggleStep(i) {
-        if (!owned) return
+    // The next step you're allowed to prove = the first one without a proof.
+    // Steps before it are proven; steps after it are locked.
+    function firstOpenStep() {
+        let i = 0
+        while (proofs[String(i)]) i++
+        return i
+    }
+
+    // Submit Proof of Work for a step → unlocks the next one
+    async function submitProof(i) {
+        if (!owned || !proofText.trim()) return
         try {
-            const res = await api.post(`/paths/${id}/steps/${i}/toggle`)
+            const res = await api.post(`/paths/${id}/steps/${i}/proof`, { proof_url: proofText.trim() })
             setDone(res.data.completed_steps || [])
+            setProofs(res.data.step_proofs || {})
+            setProofText("")                     // clear the input for the next step
+            setError("")
         } catch (err) {
-            setError("Couldn't update that step. Try again.")
+            setError(err.response?.data?.detail || "Couldn't submit proof. Try again.")
         }
     }
 
@@ -139,24 +153,26 @@ function PathDetail() {
                                 style={{ width: `${(done.length / path.steps.length) * 100}%` }} />
                         </div>
                         <div className="flex flex-col gap-2">
-                            {path.steps.map((step, i) => (
+                            {path.steps.map((step, i) => {
+                                const proven = Boolean(proofs[String(i)])
+                                const locked = owned && !proven && i > firstOpenStep()
+                                return (
                                 <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-                                    {/* step header — check circle + tappable title that opens/closes */}
+                                    {/* step header — status circle + tappable title that opens/closes */}
                                     <div className="w-full flex items-center gap-3 p-4">
-                                        <button
-                                            type="button"
-                                            onClick={() => toggleStep(i)}
-                                            disabled={!owned}
-                                            className={`shrink-0 w-6 h-6 rounded-full border flex items-center justify-center text-xs ${done.includes(i)
+                                        <span
+                                            className={`shrink-0 w-6 h-6 rounded-full border flex items-center justify-center text-xs ${proven
                                                 ? "bg-green-500 border-green-500 text-white"
-                                                : "border-zinc-600 text-transparent"} ${owned ? "" : "opacity-40 cursor-not-allowed"}`}>
-                                            ✓
-                                        </button>
+                                                : locked
+                                                    ? "border-zinc-700 text-zinc-600"
+                                                    : "border-violet-500 text-transparent"}`}>
+                                            {proven ? "✓" : locked ? "🔒" : ""}
+                                        </span>
                                         <button
                                             type="button"
                                             onClick={() => setOpenStep(openStep === i ? null : i)}
                                             className="flex-1 flex items-center justify-between gap-3 text-left">
-                                            <span className={`text-sm font-medium ${done.includes(i) ? "text-zinc-500 line-through" : "text-white"}`}>
+                                            <span className={`text-sm font-medium ${proven ? "text-zinc-500 line-through" : locked ? "text-zinc-500" : "text-white"}`}>
                                                 <span className="text-violet-400">Step {i + 1}</span> · {step.title}
                                             </span>
                                             <span className="text-zinc-500 text-xs shrink-0">
@@ -180,10 +196,38 @@ function PathDetail() {
                                             {step.tips && (
                                                 <p className="text-violet-300">💡 {step.tips}</p>
                                             )}
+
+                                            {/* Proof of Work — the gate to the next step */}
+                                            {proven ? (
+                                                <a href={proofs[String(i)]} target="_blank" rel="noreferrer"
+                                                    className="text-green-400 underline break-all">
+                                                    ✓ Proof submitted — view
+                                                </a>
+                                            ) : !owned ? (
+                                                <p className="text-zinc-500 text-xs">Enroll to start proving your work.</p>
+                                            ) : locked ? (
+                                                <p className="text-zinc-500 text-xs">🔒 Prove the previous step to unlock this one.</p>
+                                            ) : (
+                                                <div className="flex flex-col gap-2">
+                                                    <p className="text-zinc-300 text-xs">Submit proof you did this (link to your repo, screenshot, video…)</p>
+                                                    <input
+                                                        value={proofText}
+                                                        onChange={e => setProofText(e.target.value)}
+                                                        placeholder="https://…"
+                                                        className="bg-zinc-800 text-white rounded-lg px-3 py-2 text-sm outline-none border border-zinc-700 focus:border-violet-500" />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => submitProof(i)}
+                                                        className="bg-violet-600 hover:bg-violet-500 text-white font-semibold py-2 rounded-lg text-sm transition">
+                                                        Submit proof
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>
-                            ))}
+                                )
+                            })}
                         </div>
                     </div>
                 )}

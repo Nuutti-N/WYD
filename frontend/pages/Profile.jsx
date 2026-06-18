@@ -19,6 +19,7 @@ function Profile() {
     const [stats, setStats] = useState(null)
     const [User, setUser] = useState("")
     const [category, setCategory] = useState("")
+    const [proofs, setProofs] = useState([])
 
     useEffect(() => {
         async function fetchUser() {
@@ -39,6 +40,11 @@ function Profile() {
             setStats(response.data)
         }
         fetchStats()
+        async function fetchProofs() {
+            const response = await api.get("/me/proofs")
+            setProofs(response.data || [])
+        }
+        fetchProofs()
     }, [])
 
     if (!stats) return null
@@ -80,6 +86,29 @@ function Profile() {
                     />
                 </div>
             </div>
+            {/* Proof of Work portfolio — public evidence of shipped work */}
+            <div className="w-full max-w-md px-4">
+                <h2 className="text-sm font-semibold text-zinc-300 mb-2">Proof of work</h2>
+                {proofs.length === 0 ? (
+                    <p className="text-zinc-500 text-xs">No proofs yet. Enroll in a path and start shipping.</p>
+                ) : (
+                    <div className="grid grid-cols-1 gap-2">
+                        {proofs.map((p, i) => (
+                            <a
+                                key={i}
+                                href={p.proof_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="block bg-zinc-900 border border-zinc-800 rounded-xl p-3 hover:border-violet-600 transition">
+                                <p className="text-xs text-violet-400 font-medium">{p.path_title}</p>
+                                <p className="text-sm text-white">Step {p.step_index + 1} · {p.step_title}</p>
+                                <p className="text-xs text-green-400 mt-1 break-all">✓ {p.proof_url}</p>
+                            </a>
+                        ))}
+                    </div>
+                )}
+            </div>
+
             <div className="flex flex-col items-center mt-auto pb-24">
                 <button
                     type="submit"

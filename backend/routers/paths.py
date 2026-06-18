@@ -3,7 +3,7 @@ from sqlmodel import select
 from sqlalchemy import func, or_
 from backend.routers.users import get_current_user
 from backend.database import Session, get_session
-from backend.models import Path, PathIn, PathPurchase, User, Checkin
+from backend.models import Path, PathIn, PathPurchase, ProofIn, User, Checkin
 
 router = APIRouter()
 
@@ -127,8 +127,9 @@ async def active_path(session: Session = Depends(get_session), current_user=Depe
     if not path:
         return None
     data = serialize_paths([path], session)[0]
-    data["completed_steps"] = purchase.completed_steps
-    data["completed"] = len(purchase.completed_steps)
+    data["completed_steps"] = purchase.completed_steps or []
+    data["step_proofs"] = purchase.step_proofs or {}
+    data["completed"] = len(purchase.completed_steps or [])
     data["total"] = len(path.steps or [])
     return data
 
@@ -142,7 +143,8 @@ async def paths_id(id: int, session: Session = Depends(get_session), current_use
     # if this user enrolled, tell the frontend which steps they've checked off
     purchase = session.exec(select(PathPurchase).where(
         PathPurchase.user_id == current_user.id, PathPurchase.path_id == id)).first()
-    data["completed_steps"] = purchase.completed_steps if purchase else []
+    data["completed_steps"] = (purchase.completed_steps or []) if purchase else []
+    data["step_proofs"] = (purchase.step_proofs or {}) if purchase else {}
     return data
 
 
@@ -174,19 +176,67 @@ async def buy_path(id: int, session: Session = Depends(get_session), current_use
     return {"message": "Path unlocked"}
 
 
-@router.post("/paths/{id}/steps/{index}/toggle", tags=["paths"], summary="Check / uncheck a roadmap step")
-async def toggle_step(id: int, index: int, session: Session = Depends(get_session), current_user=Depends(get_current_user)):
+@router.post("/paths/{id}/steps/{index}/proof", tags=["paths"], summary="Submit Proof of Work for a step (unlocks the next one)")
+async def submit_proof(id: int, index: int, body: ProofIn, session: Session = Depends(get_session), current_user=Depends(get_current_user)):
+    path = session.exec(select(Path).where(Path.id == id)).first()
+    if not path:
+        raise HTTPException(status_code=404, detail="Path not found")
     purchase = session.exec(select(PathPurchase).where(
         PathPurchase.user_id == current_user.id, PathPurchase.path_id == id)).first()
     if not purchase:
         raise HTTPException(status_code=404, detail="Enroll in this path first")
-    # rebuild a fresh list so SQLAlchemy notices the JSON column changed
-    done = list(purchase.completed_steps)
-    if index in done:
-        done.remove(index)
-    else:
-        done.append(index)
-    purchase.completed_steps = done
+
+    total_steps = len(path.steps or [])
+    if index < 0 or index >= total_steps:
+        raise HTTPException(status_code=404, detail="No such step")
+
+    url = body.proof_url.strip()
+    if not url:
+        raise HTTPException(status_code=400, detail="Proof can't be empty")
+
+    # Gating: every earlier step must already have a proof.
+    proofs = dict(purchase.step_proofs or {})
+    for j in range(index):
+        if str(j) not in proofs:
+            raise HTTPException(
+                status_code=400, detail="Prove the earlier steps first")
+
+    # Save the proof; completed = the set of proven step indices.
+    proofs[str(index)] = url
+    purchase.step_proofs = proofs
+    purchase.completed_steps = sorted(int(k) for k in proofs)
     session.add(purchase)
     session.commit()
-    return {"completed_steps": done}
+    return {"completed_steps": purchase.completed_steps, "step_proofs": proofs}
+
+
+@router.get("/me/proofs", tags=["paths"], summary="The current user's public proof-of-work portfolio")
+async def my_proofs(session: Session = Depends(get_session), current_user=Depends(get_current_user)):
+    purchases = session.exec(select(PathPurchase).where(
+        PathPurchase.user_id == current_user.id)).all()
+    purchases = [p for p in purchases if p.step_proofs]
+    if not purchases:
+        return []
+
+    path_ids = {p.path_id for p in purchases}
+    path_rows = session.exec(select(Path).where(Path.id.in_(path_ids))).all()
+    paths = {p.id: p for p in path_rows}
+
+    out = []
+    for purchase in purchases:
+        path = paths.get(purchase.path_id)
+        if not path:
+            continue
+        steps = path.steps or []
+        # newest-proven first: higher step index = further along
+        for key in sorted(purchase.step_proofs, key=lambda k: int(k), reverse=True):
+            i = int(key)
+            step_title = steps[i]["title"] if i < len(steps) else f"Step {i + 1}"
+            out.append({
+                "path_id": path.id,
+                "path_title": path.title,
+                "step_index": i,
+                "step_title": step_title,
+                "proof_url": purchase.step_proofs[key],
+            })
+    return out

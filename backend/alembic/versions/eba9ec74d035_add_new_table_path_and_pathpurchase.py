@@ -51,12 +51,10 @@ def upgrade() -> None:
     op.alter_column('user', 'streak',
                     existing_type=sa.INTEGER(),
                     nullable=True)
+    op.execute("UPDATE checkin SET xp_earned = 0 WHERE xp_earned is NULL")
+    op.execute("UPDATE \"user\" SET streak = 0 WHERE streak is NULL")
 
     # ### end Alembic commands ###
-
-
-op.execute("UPDATE checkin SET xp_earned = 0 WHERE xp_earned is NULL")
-op.execute("UPDATE \"user\" SET streak = 0 WHERE streak is NULL")
 
 
 def downgrade() -> None:

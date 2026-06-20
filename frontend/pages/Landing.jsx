@@ -29,6 +29,29 @@ function Landing() {
                 </div>
             </section>
 
+            {/* Rolling activity strip */}
+            <div className="border-y border-gray-800/60 bg-gray-900/40 py-3 overflow-hidden -mt-30 ">
+                <div className="flex w-max animate-marquee whitespace-nowrap text-sm font-medium text-gray-400">
+                    {[0, 1].map((dup) => (
+                        <div key={dup} className="flex items-center" aria-hidden={dup === 1}>
+                            {[
+                                "Following their path daily",
+                                "Uploading proof of work",
+                                "Shipping every day",
+                                "Hitting milestones",
+                                "Proving progress, not promises",
+                                "No shortcuts — real work",
+                            ].map((phrase) => (
+                                <span key={phrase} className="flex items-center">
+                                    <span className="px-6">{phrase}</span>
+                                    <span className="text-violet-500">•</span>
+                                </span>
+                            ))}
+                        </div>
+                    ))}
+                </div>
+            </div>
+
             {/* Placeholder sections — fill these in later */}
             <section id="edge" className="scroll-mt-20 max-w-3xl mx-auto px-6 py-24">
                 <h2 className="text-3xl font-bold text-white mb-3">The Edge</h2>

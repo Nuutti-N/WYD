@@ -11,13 +11,16 @@ function Landing() {
             <section id="top" className="min-h-screen flex flex-col justify-center px-6 pt-16 relative overflow-hidden text-center">
                 <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-72 h-72 bg-violet-600 rounded-full blur-3xl opacity-60" />
                 <div className="w-full max-w-sm mx-auto flex flex-col gap-6">
-                    <header className="flex flex-col gap-5">
-                        <h1 className="text-4xl font-semibold text-white leading-tight">Find your direction</h1>
-                        <p className="text-lg font-semibold text-violet-300">Try different paths, find what drives you and never look back.</p>
+                    <header className="flex flex-col gap-5 items-center">
+                        <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-300 text-xs font-semibold px-3 py-1 tracking-wide">
+                            IDEA <span className="text-violet-400">→</span> EXECUTED
+                        </span>
+                        <h1 className="text-4xl font-semibold text-white leading-tight">Stop drifting. Find your path.</h1>
+                        <p className="text-sm text-gray-400 leading-relaxed">Everyone takes the same path — school, job, repeat. WYD makes you chase what YOU want, and prove it every day.</p>
                     </header>
 
                     <div className="flex flex-col gap-3 mt-8 text-center">
-                        <Link to="/Register" className="w-full bg-violet-600 hover:bg-violet-500 text-white font-semibold py-3 rounded-2xl transition">Get started</Link>
+                        <Link to="/Register" className="w-full bg-violet-600 hover:bg-violet-500 text-white font-semibold py-3 rounded-2xl transition">Start now — it's free</Link>
                         <div className="flex gap-1 justify-center text-sm text-gray-400">
                             <p> Already have an account?</p>
                             <Link to="/Login" className="text-violet-400 font-medium">Log in</Link>

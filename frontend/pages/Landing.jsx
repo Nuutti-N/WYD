@@ -67,6 +67,23 @@ function Landing() {
                 <h2 className="text-3xl font-bold text-white mb-3">WYD Premium</h2>
                 <p className="text-gray-400">Coming soon — start free.</p>
             </section>
+
+            <div className="w-full mx-auto border-t border-gray-800/60" />
+
+            {/* Closing CTA */}
+            <section className="px-6 py-28 relative overflow-hidden text-center">
+                <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-72 h-72 bg-violet-600 rounded-full blur-3xl opacity-50" />
+                <div className="w-full max-w-sm mx-auto flex flex-col gap-6 relative">
+                    <h2 className="text-3xl font-semibold text-white leading-tight">What are you doing with the next 30 days?</h2>
+                    <div className="flex flex-col gap-3 mt-4 text-center">
+                        <Link to="/Register" className="w-full bg-violet-600 hover:bg-violet-500 text-white font-semibold py-3 rounded-2xl transition">Start now — it's free</Link>
+                        <div className="flex gap-1 justify-center text-sm text-gray-400">
+                            <p> Already have an account?</p>
+                            <Link to="/Login" className="text-violet-400 font-medium">Log in</Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     )
 }

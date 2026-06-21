@@ -9,9 +9,9 @@ function LandingNav() {
 
                 {/* Middle: desktop-only links with hover */}
                 <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-400">
-                    <a href="#edge" className="hover:text-white transition">The Edge</a>
-                    <a href="#journey" className="hover:text-white transition">The Journey</a>
-                    <a href="#premium" className="hover:text-white transition">WYD Premium</a>
+                    <a href="#journey" className="hover:text-white transition">Pick your dream</a>
+                    <a href="#edge" className="hover:text-white transition">The proof</a>
+                    <a href="#premium" className="hover:text-white transition">Pricing</a>
                 </div>
 
                 {/* Right: secondary Log in + primary Start free */}

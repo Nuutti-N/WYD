@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import LandingNav from './LandingNav'
 import { categories } from '../src/data/categories'
-import { Code2, PenTool, FileText } from 'lucide-react'
+import { Code2, PenTool, FileText, Check } from 'lucide-react'
 
 function Landing() {
 
@@ -74,6 +74,8 @@ function Landing() {
                 </div>
             </section>
 
+            <div className="w-full mx-auto border-t border-gray-800/60" />
+
             {/* The edge — proof of work engine */}
             <section id="edge" className="scroll-mt-20 max-w-3xl mx-auto px-6 py-24">
                 <p className="text-xs font-semibold tracking-widest text-violet-400 mb-3">THE IDEA → POW ENGINE</p>
@@ -119,9 +121,59 @@ function Landing() {
                 </div>
             </section>
 
+            <div className="w-full mx-auto border-t border-gray-800/60" />
+
             <section id="premium" className="scroll-mt-20 max-w-3xl mx-auto px-6 py-24">
-                <h2 className="text-3xl font-bold text-white mb-3">WYD Premium</h2>
-                <p className="text-gray-400">Coming soon — start free.</p>
+                <p className="text-xs font-semibold tracking-widest text-violet-400 mb-3">PRICING</p>
+                <h2 className="text-3xl font-bold text-white mb-3">Start free. Go further.</h2>
+                <p className="text-gray-400 mb-8">Everything you need to start is free. Upgrade only when you want to push harder.</p>
+
+                <div className="grid sm:grid-cols-2 gap-4">
+                    {/* Free plan */}
+                    <div className="flex flex-col gap-5 rounded-2xl border border-gray-800/60 bg-gray-900/40 p-6">
+                        <div>
+                            <p className="text-sm font-semibold text-gray-300">Free</p>
+                            <p className="text-3xl font-bold text-white mt-1">€0<span className="text-base font-medium text-gray-500"> /forever</span></p>
+                        </div>
+                        <ul className="flex flex-col gap-3 text-sm text-gray-300">
+                            {[
+                                "Pick any path & roadmap",
+                                "Log daily — streak + XP",
+                                "Proof of work on every step",
+                                "3 excuse skips / month",
+                            ].map((f) => (
+                                <li key={f} className="flex items-start gap-2">
+                                    <Check className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
+                                    {f}
+                                </li>
+                            ))}
+                        </ul>
+                        <Link to="/Register" className="mt-auto text-center bg-violet-600 hover:bg-violet-500 text-white font-semibold py-3 rounded-2xl transition">Start now — it's free</Link>
+                    </div>
+
+                    {/* Premium plan */}
+                    <div className="flex flex-col gap-5 rounded-2xl border border-violet-500/50 bg-violet-600/10 p-6 relative">
+                        <span className="absolute top-4 right-4 text-xs font-semibold text-violet-300 bg-violet-500/15 border border-violet-500/30 rounded-full px-2 py-0.5">Coming soon</span>
+                        <div>
+                            <p className="text-sm font-semibold text-violet-300">WYD Prime</p>
+                            <p className="text-3xl font-bold text-white mt-1">€9.99<span className="text-base font-medium text-gray-500"> /month</span></p>
+                        </div>
+                        <ul className="flex flex-col gap-3 text-sm text-gray-200">
+                            {[
+                                "Everything in Free",
+                                "Unlimited excuse skips",
+                                "Unlock premium creator paths",
+                                "Stake on your goal — skin in the game",
+                            ].map((f) => (
+                                <li key={f} className="flex items-start gap-2">
+                                    <Check className="w-4 h-4 text-violet-300 shrink-0 mt-0.5" />
+                                    {f}
+                                </li>
+                            ))}
+                        </ul>
+                        <button disabled className="mt-auto text-center bg-gray-800 text-gray-400 font-semibold py-3 rounded-2xl cursor-not-allowed">Coming soon</button>
+                    </div>
+                </div>
             </section>
 
             <div className="w-full mx-auto border-t border-gray-800/60" />
@@ -140,9 +192,13 @@ function Landing() {
                     </div>
                 </div>
             </section>
+
+            <div className="w-full mx-auto border-t border-gray-800/60" />
+
         </div>
     )
 }
 
 
 export default Landing
+

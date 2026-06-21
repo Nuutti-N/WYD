@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import LandingNav from './LandingNav'
 import { categories } from '../src/data/categories'
+import { Code2, PenTool, FileText } from 'lucide-react'
 
 function Landing() {
 
@@ -53,12 +54,7 @@ function Landing() {
                 </div>
             </div>
 
-            {/* Placeholder sections — fill these in later */}
-            <section id="edge" className="scroll-mt-20 max-w-3xl mx-auto px-6 py-24">
-                <h2 className="text-3xl font-bold text-white mb-3">The Edge</h2>
-                <p className="text-gray-400">Coming soon — what makes WYD different.</p>
-            </section>
-
+            {/* Step 1 — pick your dream */}
             <section id="journey" className="scroll-mt-20 max-w-3xl mx-auto px-6 py-24">
                 <p className="text-xs font-semibold tracking-widest text-violet-400 mb-3">STEP 01</p>
                 <h2 className="text-3xl font-bold text-white mb-3">Pick your dream</h2>
@@ -75,6 +71,51 @@ function Landing() {
                             <span className="text-lg font-semibold text-white group-hover:text-violet-300 transition">{cat.label}</span>
                         </Link>
                     ))}
+                </div>
+            </section>
+
+            {/* The edge — proof of work engine */}
+            <section id="edge" className="scroll-mt-20 max-w-3xl mx-auto px-6 py-24">
+                <p className="text-xs font-semibold tracking-widest text-violet-400 mb-3">THE IDEA → POW ENGINE</p>
+                <h2 className="text-3xl font-bold text-white mb-3">Idea to <span className="text-violet-400">executed.</span></h2>
+                <p className="text-gray-400 mb-8">Most people get stuck in the "idea" cloud — worrying about logistics, costs, or getting stranded. WYD makes you stop guessing and start uploading proof against a proven template.</p>
+
+                <ul className="flex flex-col gap-4 mb-10">
+                    {[
+                        { icon: Code2, text: "Code screenshots, timestamped" },
+                        { icon: PenTool, text: "Wireframes, mockups, design files" },
+                        { icon: FileText, text: "Text summaries, reviewed in your cohort" },
+                    ].map(({ icon: Icon, text }) => (
+                        <li key={text} className="flex items-center gap-3 text-gray-300">
+                            <Icon className="w-5 h-5 text-violet-400 shrink-0" />
+                            {text}
+                        </li>
+                    ))}
+                </ul>
+
+                {/* PROOF.LOG showcase — illustrative, not real data */}
+                <div className="rounded-2xl border border-gray-800/60 bg-gray-900/60 p-5 font-mono text-sm">
+                    <div className="flex justify-between text-xs text-gray-500 mb-4 tracking-wide">
+                        <span>PROOF.LOG — EXAMPLE</span>
+                        <span>APPEND-ONLY</span>
+                    </div>
+                    <div className="flex flex-col gap-3">
+                        {[
+                            { day: "Day 21", text: "Wireframed onboarding (5 screens)", hash: "#29d5e1" },
+                            { day: "Day 28", text: "Logged 4h deep work on schema", hash: "#84c1ff" },
+                            { day: "Day 04", text: "Shipped v0 of the routing table", hash: "#a4f9c2" },
+                        ].map((row) => (
+                            <div key={row.hash} className="border-t border-gray-800/60 pt-3 first:border-0 first:pt-0">
+                                <div className="flex justify-between text-xs text-gray-500">
+                                    <span>sample.user</span>
+                                    <span>{row.day}</span>
+                                </div>
+                                <p className="text-gray-300">{row.text}</p>
+                                <p className="text-violet-400">{row.hash}</p>
+                            </div>
+                        ))}
+                    </div>
+                    <p className="text-xs text-gray-600 mt-4">Illustrative — not a live feed</p>
                 </div>
             </section>
 

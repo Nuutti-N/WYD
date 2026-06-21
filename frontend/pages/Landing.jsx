@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import LandingNav from './LandingNav'
+import { categories } from '../src/data/categories'
 
 function Landing() {
 
@@ -59,8 +60,22 @@ function Landing() {
             </section>
 
             <section id="journey" className="scroll-mt-20 max-w-3xl mx-auto px-6 py-24">
-                <h2 className="text-3xl font-bold text-white mb-3">The Journey</h2>
-                <p className="text-gray-400">Coming soon — pick a path, log daily, climb the leaderboard.</p>
+                <p className="text-xs font-semibold tracking-widest text-violet-400 mb-3">STEP 01</p>
+                <h2 className="text-3xl font-bold text-white mb-3">Pick your dream</h2>
+                <p className="text-gray-400 mb-8">No abstract questionnaires. Click the thing you actually want to become.</p>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {categories.map((cat) => (
+                        <Link
+                            key={cat.label}
+                            to="/Register"
+                            className="group flex flex-col justify-between gap-6 rounded-2xl border border-gray-800/60 bg-gray-900/40 p-4 hover:border-violet-500/50 hover:bg-violet-600/10 transition"
+                        >
+                            <span className="text-xs text-gray-500">Template in progress</span>
+                            <span className="text-lg font-semibold text-white group-hover:text-violet-300 transition">{cat.label}</span>
+                        </Link>
+                    ))}
+                </div>
             </section>
 
             <section id="premium" className="scroll-mt-20 max-w-3xl mx-auto px-6 py-24">

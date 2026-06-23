@@ -10,10 +10,12 @@ function Landing() {
             name: "Free",
             price: "€0",
             period: "/forever",
+            tagline: "Start alone, prove it daily.",
             features: [
                 "Pick any path & roadmap",
                 "Log daily — streak + XP",
                 "Proof of work on every step",
+                "Public proof portfolio",
                 "3 excuse skips / month",
             ],
             cta: { label: "Start now — it's free", to: "/Register" },
@@ -22,24 +24,25 @@ function Landing() {
             name: "WYD Prime",
             price: "€9.99",
             period: "/month",
+            tagline: "Stop grinding in the dark. Gets stronger as your cohort fills.",
             features: [
                 "Everything in Free",
-                "Unlimited excuse skips",
-                "Unlock premium creator paths",
-                "Detailed progress stats & insights",
+                "Unlock proven paths from people who actually did it",
+                "Human proof review — your cohort checks every step (not AI)",
+                "A cohort chasing the same dream as you",
             ],
             cta: { label: "Coming soon", disabled: true },
         },
         {
-            name: "WYD ELITE",
+            name: "WYD Elite",
             price: "€19.99",
             period: "/month",
+            tagline: "Real stakes. Real consequences.",
             features: [
                 "Everything in Prime",
-                "Personal AI coach for your dream",
-                "Daily plan + check-ins",
-                "AI reviews your proof of work",
-                "AI builds your custom roadmap",
+                "Stake money on your path — hit milestones or lose it",
+                "AI guide that knows your exact path + every proof you've logged",
+                "Featured proof portfolio — get discovered",
             ],
             cta: { label: "Coming soon", disabled: true },
         },
@@ -165,8 +168,8 @@ function Landing() {
 
             <section id="premium" className="scroll-mt-20 max-w-5xl mx-auto px-6 py-24">
                 <p className="text-xs font-semibold tracking-widest text-violet-400 mb-3">PRICING</p>
-                <h2 className="text-3xl font-bold text-white mb-3">Start free. Go further.</h2>
-                <p className="text-gray-400 mb-8">Everything you need to start is free. Upgrade only when you want to push harder.</p>
+                <h2 className="text-3xl font-bold text-white mb-3">The free version is real. The paid ones raise the stakes.</h2>
+                <p className="text-gray-400 mb-8">No fake premium. Every upgrade adds something you can't get for free — real eyes on your work, proven paths, and real money on the line.</p>
 
                 <div className="grid sm:grid-cols-3 gap-4">
                     {tiers.map((tier) => (
@@ -177,6 +180,7 @@ function Landing() {
                             <div>
                                 <p className="text-sm font-semibold text-gray-300">{tier.name}</p>
                                 <p className="text-3xl font-bold text-white mt-1">{tier.price}<span className="text-base font-medium text-gray-500"> {tier.period}</span></p>
+                                <p className="text-sm text-gray-400 mt-2">{tier.tagline}</p>
                             </div>
                             <ul className="flex flex-col gap-3 text-sm text-gray-300">
                                 {tier.features.map((f) => (

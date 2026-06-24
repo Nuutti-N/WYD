@@ -196,7 +196,11 @@ function Paths() {
             result.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         }
         if (activeTab === "Popular") {
-            result.sort((a, b) => (b.enrolled || 0) - (a.enrolled || 0))
+            // rank by who actually FINISHED the path, not who just signed up;
+            // tiebreak on enrolled so newer-but-busy paths still surface
+            result.sort((a, b) =>
+                (b.finished || 0) - (a.finished || 0) ||
+                (b.enrolled || 0) - (a.enrolled || 0))
         }
         if (userCategory && activeTab === "All") {
             result.sort((a, b) => {
@@ -212,7 +216,7 @@ function Paths() {
 
     const subtitle = {
         All: "Find a roadmap to reach your dream faster.",
-        Popular: "Most enrolled paths.",
+        Popular: "Paths most people actually finish.",
         New: "Freshly published roadmaps.",
         "My paths": "Your published paths and drafts.",
         Create: "Share a step-by-step roadmap others can follow.",
@@ -222,7 +226,7 @@ function Paths() {
 
     return (
         <div className="min-h-screen bg-gray-950 flex flex-col">
-            <div className="px-6 max-w-md mx-auto pt-20 flex flex-col flex-1 w-full">
+            <div className="px-6 max-w-md mx-auto pt-20 flex flex-col flex-1 w-full pb-32">
                 <h1 className="text-white font-bold text-2xl">
                     {activeTab === "Create" ? "Create a Path" : "Paths"}
                 </h1>
@@ -453,6 +457,7 @@ function Paths() {
                                     <div className="flex items-center gap-3 text-xs text-zinc-500 border-t border-zinc-700 pt-3">
                                         {path.total_hours ? <span>⏱ {path.total_hours}h</span> : null}
                                         <span>👥 {path.enrolled || 0} enrolled</span>
+                                        <span className="text-green-400">✅ {path.finished || 0} finished</span>
                                     </div>
                                 </div>
                             )

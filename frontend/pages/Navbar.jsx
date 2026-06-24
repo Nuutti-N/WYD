@@ -8,6 +8,10 @@ function Navbar() {
     if (hiddenOn.includes(location.pathname)) {
         return null
     }
+    // path detail page (/Path/5) = full screen, no navbar. The list (/Path) keeps it.
+    if (location.pathname.startsWith("/Path/")) {
+        return null
+    }
 
     function linkClass(path) {
         return location.pathname === path ? "text-violet-300 bg-purple-700 p-2 rounded-xl transition-all" : "text-gray-500 p-2 rounded-xl transition-all"

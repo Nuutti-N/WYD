@@ -17,6 +17,27 @@ def enrolled_counts(session: Session) -> dict[int, int]:
     return {path_id: count for path_id, count in rows}
 
 
+def finished_counts(paths: list[Path], session: Session) -> dict[int, int]:
+    """How many enrollees PROVED every step of each path (true completion).
+
+    "Finished" = an enrollment whose completed_steps covers all of the path's
+    steps. This is what 'Popular' should rank by — real finishers, not sign-ups.
+    """
+    totals = {p.id: len(p.steps or []) for p in paths}
+    if not totals:
+        return {}
+    rows = session.exec(
+        select(PathPurchase.path_id, PathPurchase.completed_steps)
+        .where(PathPurchase.path_id.in_(totals.keys()))
+    ).all()
+    finished = {pid: 0 for pid in totals}
+    for path_id, completed in rows:
+        total = totals.get(path_id, 0)
+        if total > 0 and len(completed or []) >= total:
+            finished[path_id] += 1
+    return finished
+
+
 def serialize_paths(paths: list[Path], session: Session) -> list[dict]:
     """Turn paths into response dicts with enrolled count + mentor proof.
 
@@ -25,6 +46,7 @@ def serialize_paths(paths: list[Path], session: Session) -> list[dict]:
     walked the path. Each dict gets mentor_name / mentor_streak / mentor_hours.
     """
     counts = enrolled_counts(session)
+    finished = finished_counts(paths, session)
 
     creator_ids = {p.creator_id for p in paths}
     users: dict[int, User] = {}
@@ -43,7 +65,11 @@ def serialize_paths(paths: list[Path], session: Session) -> list[dict]:
     out = []
     for p in paths:
         data = p.model_dump()
-        data["enrolled"] = counts.get(p.id, 0)
+        enrolled = counts.get(p.id, 0)
+        data["enrolled"] = enrolled
+        data["finished"] = finished.get(p.id, 0)
+        data["completion_rate"] = round(
+            data["finished"] / enrolled * 100) if enrolled else 0
         u = users.get(p.creator_id)
         if u:
             data["mentor_name"] = u.username or u.full_name or u.email.split(

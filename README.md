@@ -37,4 +37,3 @@ https://wyd-sigma.vercel.app/
 - Designing auth flows for real users (email/password)
 - Designing UI with Tailwind CSS
 - Handling CORS, Environment variables, and deployment Railway and Vercel
-- Semantic search powered by pgvector — find relevant paths by meaning, not just keywords

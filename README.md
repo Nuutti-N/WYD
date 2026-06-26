@@ -6,8 +6,7 @@
 ## Live Demo
 https://wyd-sigma.vercel.app/
 
-<img width="1218" height="935" alt="image" src="https://github.com/user-attachments/assets/136ca970-f433-4e1e-bdeb-0f79a15f6207" /> 
-
+<img width="1919" height="903" alt="image" src="https://github.com/user-attachments/assets/be3650ca-b6a5-4e78-9889-094e8db4d5d3" />
 
 
 ## Features 
@@ -24,7 +23,7 @@ https://wyd-sigma.vercel.app/
 | Backend | Python FastAPI |
 | Database | PostgreSQL (SQLAlchemy) |
 | Auth | JWT |
-| Frontend | React + Tailwind CSS (mobile-first — demo is phone only) |
+| Frontend | React + Tailwind CSS |
 | Deploy | Railway (backend) + Vercel (frontend) | 
 
 ## What I built

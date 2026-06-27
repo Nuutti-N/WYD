@@ -11,7 +11,6 @@ function LandingNav() {
                 <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-400">
                     <a href="#journey" className="hover:text-white transition">Pick your dream</a>
                     <a href="#edge" className="hover:text-white transition">The proof</a>
-                    <a href="#premium" className="hover:text-white transition">Pricing</a>
                 </div>
 
                 {/* Right: secondary Log in + primary Start free */}

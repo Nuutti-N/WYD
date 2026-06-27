@@ -1,52 +1,9 @@
 import { Link } from 'react-router-dom'
 import LandingNav from './LandingNav'
 import { categories } from '../src/data/categories'
-import { Code2, PenTool, FileText, Check } from 'lucide-react'
+import { Code2, PenTool, FileText } from 'lucide-react'
 
 function Landing() {
-
-    const tiers = [
-        {
-            name: "Free",
-            price: "€0",
-            period: "/forever",
-            tagline: "Start alone, prove it daily.",
-            features: [
-                "Pick any path & roadmap",
-                "Log daily — streak + XP",
-                "Proof of work on every step",
-                "Public proof portfolio",
-                "3 excuse skips / month",
-            ],
-            cta: { label: "Start now — it's free", to: "/Register" },
-        },
-        {
-            name: "WYD Prime",
-            price: "€9.99",
-            period: "/month",
-            tagline: "Stop grinding in the dark. Gets stronger as your cohort fills.",
-            features: [
-                "Everything in Free",
-                "Unlock proven paths from people who actually did it",
-                "Human proof review — your cohort checks every step (not AI)",
-                "A cohort chasing the same dream as you",
-            ],
-            cta: { label: "Coming soon", disabled: true },
-        },
-        {
-            name: "WYD Elite",
-            price: "€19.99",
-            period: "/month",
-            tagline: "Real stakes. Real consequences.",
-            features: [
-                "Everything in Prime",
-                "Stake money on your path — hit milestones or lose it",
-                "AI guide that knows your exact path + every proof you've logged",
-                "Featured proof portfolio — get discovered",
-            ],
-            cta: { label: "Coming soon", disabled: true },
-        },
-    ]
 
     return (
         <div className="bg-gray-950 text-white">
@@ -161,42 +118,6 @@ function Landing() {
                         ))}
                     </div>
                     <p className="text-xs text-gray-600 mt-4">Illustrative — not a live feed</p>
-                </div>
-            </section>
-
-            <div className="w-full mx-auto border-t border-gray-800/60" />
-
-            <section id="premium" className="scroll-mt-20 max-w-5xl mx-auto px-6 py-24">
-                <p className="text-xs font-semibold tracking-widest text-violet-400 mb-3">PRICING</p>
-                <h2 className="text-3xl font-bold text-white mb-3">The free version is real. The paid ones raise the stakes.</h2>
-                <p className="text-gray-400 mb-8">No fake premium. Every upgrade adds something you can't get for free — real eyes on your work, proven paths, and real money on the line.</p>
-
-                <div className="grid sm:grid-cols-3 gap-4">
-                    {tiers.map((tier) => (
-                        <div key={tier.name} className="flex flex-col gap-5 rounded-2xl border border-gray-800/60 bg-gray-900/40 p-6 relative">
-                            {tier.cta.disabled && (
-                                <span className="absolute top-4 right-4 text-xs font-semibold text-violet-300 bg-violet-500/15 border border-violet-500/30 rounded-full px-2 py-0.5">Coming soon</span>
-                            )}
-                            <div>
-                                <p className="text-sm font-semibold text-gray-300">{tier.name}</p>
-                                <p className="text-3xl font-bold text-white mt-1">{tier.price}<span className="text-base font-medium text-gray-500"> {tier.period}</span></p>
-                                <p className="text-sm text-gray-400 mt-2">{tier.tagline}</p>
-                            </div>
-                            <ul className="flex flex-col gap-3 text-sm text-gray-300">
-                                {tier.features.map((f) => (
-                                    <li key={f} className="flex items-start gap-2">
-                                        <Check className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
-                                        {f}
-                                    </li>
-                                ))}
-                            </ul>
-                            {tier.cta.disabled ? (
-                                <button disabled className="mt-auto text-center bg-gray-800 text-gray-400 font-semibold py-3 rounded-2xl cursor-not-allowed">{tier.cta.label}</button>
-                            ) : (
-                                <Link to={tier.cta.to} className="mt-auto text-center bg-violet-600 hover:bg-violet-500 text-white font-semibold py-3 rounded-2xl transition">{tier.cta.label}</Link>
-                            )}
-                        </div>
-                    ))}
                 </div>
             </section>
 

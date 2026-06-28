@@ -104,7 +104,7 @@ function Logprogress() {
                             />
                         </label>}
                 </div>
-                <div className="flex flex-col items-center mt-auto pb-24">
+                <div className="flex flex-col items-center mt-auto pb-32">
                     <button
                         type="submit"
                         disabled={!image || loading}

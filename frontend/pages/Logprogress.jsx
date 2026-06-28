@@ -8,14 +8,36 @@ function Logprogress() {
     const [loading, setLoading] = useState(false)
     const [hours, setHours] = useState(0)
     const [note, setNote] = useState("")
+    const [image, setImage] = useState(null)
+    const [preview, setPreview] = useState("")
+
+    function handleImage(e) {
+        const file = e.target.files[0]
+        if (!file) return
+        setImage(file)
+        setPreview(URL.createObjectURL(file))
+    }
+
+    function removeImage() {
+        if (preview) URL.revokeObjectURL(preview)
+        setImage(null)
+        setPreview("")
+    }
+
     async function handleSubmit(e) {
         e.preventDefault()
         setLoading(true)
         try {
             setError("")
-            await api.post("/checkins", { hours, note })
+            const fd = new FormData()
+            fd.append("hours", hours)
+            fd.append("note", note)
+            fd.append("proof", image)
+            await api.post("/checkins", fd)
             setHours(0)
             setNote("")
+            setImage(null)
+            setPreview("")
             navigate("/Dashboard")
         }
         catch (err) {
@@ -61,10 +83,32 @@ function Logprogress() {
                     />
 
                 </div>
+                <div className="flex flex-col items-center">
+                    {preview
+                        ? <div className="relative w-72 h-40 rounded-2xl overflow-hidden border border-gray-700">
+                            <img src={preview} alt="proof" className="w-full h-full object-cover" />
+                            <button
+                                type="button"
+                                onClick={removeImage}
+                                className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center text-lg leading-none">
+                                ✕
+                            </button>
+                        </div>
+                        : <label className="w-72 h-40 bg-gray-800 border border-gray-700 rounded-2xl flex items-center justify-center overflow-hidden cursor-pointer focus-within:border-violet-500">
+                            <span className="text-gray-500 text-sm">+ Add a photo (proof)</span>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImage}
+                                className="hidden"
+                            />
+                        </label>}
+                </div>
                 <div className="flex flex-col items-center mt-auto pb-24">
                     <button
                         type="submit"
-                        className=" w-64 bg-violet-600 hover:bg-violet-700 shadow-lg shadow-violet-500/40 active:scale-95 text-white font-semibold py-3 rounded-xl transition mt-2"
+                        disabled={!image || loading}
+                        className=" w-64 bg-violet-600 hover:bg-violet-700 shadow-lg shadow-violet-500/40 active:scale-95 text-white font-semibold py-3 rounded-xl transition mt-2 disabled:opacity-40 disabled:active:scale-100"
                     >
                         Submit proof
                     </button>

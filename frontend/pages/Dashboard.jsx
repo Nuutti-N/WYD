@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import api from "../api/client"
 
 
@@ -25,25 +25,21 @@ function Home() {
     const [stats, setStats] = useState(null)
     const [user, setUser] = useState(null)
     const [dream, setDream] = useState(null)
-    const [roadmap, setRoadmap] = useState(null)   // active path + progress
 
     useEffect(() => {
         async function dashboard() {
             try {
                 // run them all at once — faster than awaiting one by one.
-                // /dream_info 404s if the user hasn't picked a dream yet, and
-                // /paths/active returns null if they haven't started a roadmap,
-                // so we guard both instead of failing the whole load.
-                const [statsRes, meRes, dreamRes, roadmapRes] = await Promise.all([
+                // /dream_info 404s if the user hasn't picked a dream yet,
+                // so we guard it instead of failing the whole load.
+                const [statsRes, meRes, dreamRes] = await Promise.all([
                     api.get("/checkins/stats"),
                     api.get("/me"),
                     api.get("/dream_info").catch(() => null),
-                    api.get("/paths/active").catch(() => null),
                 ])
                 setStats(statsRes.data)
                 setUser(meRes.data)
                 if (dreamRes) setDream(dreamRes.data)
-                if (roadmapRes && roadmapRes.data) setRoadmap(roadmapRes.data)
             } catch (err) {
                 setError("Couldn't load your dashboard")
             } finally {
@@ -70,28 +66,6 @@ function Home() {
                         </p>
                         <span className="inline-block text-xs text-gray-500 mt-2 px-2 py-0.5 rounded-full bg-zinc-800">{dream.category}</span>
                     </div>
-                )}
-
-                {/* roadmap progress — the "journey", not just a counter */}
-                {roadmap ? (
-                    <Link to={`/Path/${roadmap.id}`}
-                        className="block mt-4 rounded-2xl bg-zinc-900 border border-zinc-800 p-4">
-                        <div className="flex items-center justify-between">
-                            <p className="text-xs font-semibold uppercase tracking-wider text-violet-400">Your roadmap</p>
-                            <span className="text-xs text-zinc-400">{roadmap.completed} / {roadmap.total} steps</span>
-                        </div>
-                        <p className="text-white font-semibold text-base mt-1">{roadmap.title}</p>
-                        <div className="w-full bg-zinc-800 rounded-full h-2 mt-3">
-                            <div className="bg-violet-500 h-2 rounded-full transition-all"
-                                style={{ width: `${roadmap.total ? (roadmap.completed / roadmap.total) * 100 : 0}%` }} />
-                        </div>
-                    </Link>
-                ) : (
-                    <Link to="/Path"
-                        className="block mt-4 rounded-2xl bg-zinc-900 border border-dashed border-zinc-700 p-4">
-                        <p className="text-white font-medium">Pick a roadmap →</p>
-                        <p className="text-sm text-zinc-400 mt-1">Follow real steps to your dream, not just hours.</p>
-                    </Link>
                 )}
 
                 <div className="mt-4 w-full rounded-2xl bg-[linear-gradient(135deg,#1a1730,#2a1f4a)] border border-purple-800 p-4 flex items-center justify-between ">
